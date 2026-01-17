@@ -106,7 +106,7 @@ function Resources() {
         </div>
       </div>
 
-      <main className="container mx-auto px-4 py-6">
+      <main className="container mx-auto px-4 py-6 hero-backdrop">
         {loading && (
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (

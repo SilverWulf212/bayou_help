@@ -3,7 +3,7 @@ import { ArrowLeft, Shield, Eye, Trash2 } from 'lucide-react'
 
 function Privacy() {
   return (
-    <div className="min-h-screen bg-bayou-cream">
+    <div className="min-h-screen hero-backdrop">
       <header className="bg-bayou-green text-white py-3 px-4 flex items-center gap-4">
         <Link to="/" className="hover:opacity-80">
           <ArrowLeft className="w-6 h-6" />

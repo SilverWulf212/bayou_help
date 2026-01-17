@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, Send } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import ChatInput from '../components/chat/ChatInput'
 import ChatMessage from '../components/chat/ChatMessage'
 import { useChat } from '../hooks/useChat'
@@ -37,7 +37,7 @@ function Chat() {
         </div>
       </header>
 
-      <main className="flex-1 overflow-y-auto p-4 space-y-4">
+        <main className="flex-1 overflow-y-auto p-4 space-y-4 hero-backdrop">
         {messages.length === 0 && (
           <div className="space-y-4">
             <div className="bg-white rounded-lg p-4 border border-border">

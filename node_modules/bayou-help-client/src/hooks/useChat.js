@@ -33,7 +33,7 @@ export function useChat() {
       }
 
       setMessages((prev) => [...prev, assistantMessage])
-    } catch (error) {
+    } catch {
       const errorMessage = {
         role: 'assistant',
         content:

@@ -1,99 +1,168 @@
 import { Link } from 'react-router-dom'
-import { MessageCircle, MapPin, Shield } from 'lucide-react'
+import { ArrowRight, Heart, MessageCircle, MapPin, Shield } from 'lucide-react'
 
 function Landing() {
   return (
-    <div className="min-h-screen bg-bayou-cream">
-      <header className="bg-bayou-green text-white py-4 px-4">
-        <div className="container mx-auto">
-          <h1 className="text-2xl font-bold">Bayou Help</h1>
-          <p className="text-bayou-cream/80 text-sm">Acadiana Community Resources</p>
+    <div className="min-h-screen hero-backdrop">
+      <header className="px-4 pt-6">
+        <div className="container mx-auto flex items-center justify-between">
+          <div className="soft-fade-in">
+            <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
+              Acadiana Community Support
+            </p>
+            <h1 className="mt-1 text-2xl sm:text-3xl font-semibold text-bayou-green">
+              Bayou Help
+            </h1>
+          </div>
+
+          <div className="flex items-center gap-2 soft-fade-in">
+            <Link
+              to="/privacy"
+              className="rounded-full px-4 py-2 text-sm bg-white/70 border border-border hover:bg-white transition-colors"
+            >
+              Privacy
+            </Link>
+            <Link
+              to="/admin"
+              className="rounded-full px-4 py-2 text-sm bg-white/70 border border-border hover:bg-white transition-colors"
+            >
+              Admin
+            </Link>
+          </div>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
-        <section className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-bayou-green mb-4">
-            Find Help in Acadiana
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Free, private help finding shelter, food, healthcare, and other
-            resources in Lafayette and surrounding parishes.
-          </p>
-        </section>
+      <main className="container mx-auto px-4 pb-12 pt-8">
+        <section className="grid gap-10 lg:grid-cols-12 items-start">
+          <div className="lg:col-span-7">
+            <div className="hero-glass rounded-3xl border border-border p-6 sm:p-10 soft-rise-in">
+              <div className="flex items-center gap-2 text-bayou-green/90">
+                <Heart className="w-4 h-4" />
+                <p className="text-sm">Quiet help, with dignity.</p>
+              </div>
 
-        <section className="grid gap-4 md:grid-cols-3 max-w-4xl mx-auto mb-12">
-          <Link
-            to="/chat"
-            className="flex flex-col items-center p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow border border-border"
-          >
-            <MessageCircle className="w-12 h-12 text-bayou-blue mb-4" />
-            <h3 className="text-xl font-semibold text-bayou-green mb-2">Chat for Help</h3>
-            <p className="text-center text-muted-foreground text-sm">
-              Tell us what you need and we'll help you find local resources
-            </p>
-          </Link>
+              <h2 className="mt-4 text-4xl sm:text-5xl leading-[1.05] font-semibold text-[hsl(var(--hero-ink))]">
+                Find shelter, food, care,
+                <span className="block">and next steps — gently.</span>
+              </h2>
 
-          <Link
-            to="/resources"
-            className="flex flex-col items-center p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow border border-border"
-          >
-            <MapPin className="w-12 h-12 text-bayou-blue mb-4" />
-            <h3 className="text-xl font-semibold text-bayou-green mb-2">Browse Resources</h3>
-            <p className="text-center text-muted-foreground text-sm">
-              Search shelters, food pantries, clinics, and more by parish
-            </p>
-          </Link>
+              <p className="mt-4 text-base sm:text-lg text-muted-foreground max-w-xl">
+                Private, no-judgment support to connect you with resources in Lafayette
+                and surrounding parishes.
+              </p>
 
-          <Link
-            to="/privacy"
-            className="flex flex-col items-center p-6 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow border border-border"
-          >
-            <Shield className="w-12 h-12 text-bayou-blue mb-4" />
-            <h3 className="text-xl font-semibold text-bayou-green mb-2">Your Privacy</h3>
-            <p className="text-center text-muted-foreground text-sm">
-              Learn how we protect your information and keep you safe
-            </p>
-          </Link>
-        </section>
+              <div className="mt-7 flex flex-col sm:flex-row gap-3">
+                <Link
+                  to="/chat"
+                  className="group inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-4 bg-bayou-green text-white shadow-sm hover:bg-bayou-green/90 transition-colors"
+                >
+                  Start a private chat
+                  <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+                </Link>
 
-        <section className="bg-white rounded-lg p-6 max-w-2xl mx-auto border border-border">
-          <h3 className="text-lg font-semibold text-bayou-green mb-4">
-            Quick Help
-          </h3>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <Link
-              to="/resources?category=shelter"
-              className="px-4 py-3 bg-bayou-cream rounded-md text-bayou-green hover:bg-bayou-green hover:text-white transition-colors text-center"
-            >
-              I need a place to stay
-            </Link>
-            <Link
-              to="/resources?category=food"
-              className="px-4 py-3 bg-bayou-cream rounded-md text-bayou-green hover:bg-bayou-green hover:text-white transition-colors text-center"
-            >
-              I need food
-            </Link>
-            <Link
-              to="/resources?category=health"
-              className="px-4 py-3 bg-bayou-cream rounded-md text-bayou-green hover:bg-bayou-green hover:text-white transition-colors text-center"
-            >
-              I need medical help
-            </Link>
-            <Link
-              to="/resources?category=crisis"
-              className="px-4 py-3 bg-bayou-cream rounded-md text-bayou-green hover:bg-bayou-green hover:text-white transition-colors text-center"
-            >
-              I'm in crisis
-            </Link>
+                <Link
+                  to="/resources"
+                  className="inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-4 bg-white/70 border border-border hover:bg-white transition-colors"
+                >
+                  Browse resources
+                  <MapPin className="w-4 h-4 text-bayou-blue" />
+                </Link>
+              </div>
+
+              <div className="mt-7 rounded-2xl bg-white/60 border border-border p-4">
+                <p className="text-xs text-muted-foreground">
+                  <strong>Emergency?</strong> Call 911.{' '}
+                  <span className="mx-1">|</span>
+                  <strong>Crisis?</strong> Call 988.
+                </p>
+              </div>
+            </div>
           </div>
-        </section>
 
-        <section className="mt-8 text-center">
-          <p className="text-sm text-muted-foreground">
-            <strong>Emergency?</strong> Call 911 |
-            <strong> Crisis?</strong> Call 988 (Suicide & Crisis Lifeline)
-          </p>
+          <div className="lg:col-span-5 space-y-4">
+            <Link
+              to="/chat"
+              className="block hero-glass rounded-3xl border border-border p-5 sm:p-6 soft-rise-in stagger-1 hover:bg-white/80 transition-colors"
+            >
+              <div className="flex items-start gap-4">
+                <div className="w-11 h-11 rounded-2xl bg-bayou-blue/15 flex items-center justify-center">
+                  <MessageCircle className="w-5 h-5 text-bayou-blue" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-bayou-green">Chat for help</h3>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Tell us what you need. We'll suggest local resources.
+                  </p>
+                </div>
+              </div>
+            </Link>
+
+            <Link
+              to="/resources"
+              className="block hero-glass rounded-3xl border border-border p-5 sm:p-6 soft-rise-in stagger-2 hover:bg-white/80 transition-colors"
+            >
+              <div className="flex items-start gap-4">
+                <div className="w-11 h-11 rounded-2xl bg-bayou-green/10 flex items-center justify-center">
+                  <MapPin className="w-5 h-5 text-bayou-green" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-bayou-green">Browse by parish</h3>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Shelters, food pantries, clinics, transportation, and more.
+                  </p>
+                </div>
+              </div>
+            </Link>
+
+            <Link
+              to="/privacy"
+              className="block hero-glass rounded-3xl border border-border p-5 sm:p-6 soft-rise-in stagger-3 hover:bg-white/80 transition-colors"
+            >
+              <div className="flex items-start gap-4">
+                <div className="w-11 h-11 rounded-2xl bg-bayou-gold/20 flex items-center justify-center">
+                  <Shield className="w-5 h-5 text-bayou-green" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-bayou-green">Your privacy</h3>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    How we keep your information safe.
+                  </p>
+                </div>
+              </div>
+            </Link>
+
+            <section className="rounded-3xl border border-border bg-white/60 p-5 sm:p-6">
+              <h3 className="text-sm tracking-[0.18em] uppercase text-muted-foreground">
+                Quick paths
+              </h3>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                <Link
+                  to="/resources?category=shelter"
+                  className="rounded-2xl px-4 py-3 bg-white/70 border border-border hover:bg-white transition-colors text-center text-sm"
+                >
+                  Shelter
+                </Link>
+                <Link
+                  to="/resources?category=food"
+                  className="rounded-2xl px-4 py-3 bg-white/70 border border-border hover:bg-white transition-colors text-center text-sm"
+                >
+                  Food
+                </Link>
+                <Link
+                  to="/resources?category=health"
+                  className="rounded-2xl px-4 py-3 bg-white/70 border border-border hover:bg-white transition-colors text-center text-sm"
+                >
+                  Medical
+                </Link>
+                <Link
+                  to="/resources?category=crisis"
+                  className="rounded-2xl px-4 py-3 bg-white/70 border border-border hover:bg-white transition-colors text-center text-sm"
+                >
+                  Crisis
+                </Link>
+              </div>
+            </section>
+          </div>
         </section>
       </main>
     </div>

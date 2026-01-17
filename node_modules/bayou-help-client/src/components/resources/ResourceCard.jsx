@@ -1,7 +1,34 @@
-import { Phone, MapPin, Clock, ArrowRight } from 'lucide-react'
+import { useId, useState } from 'react'
+import { Phone, MapPin, Clock, ArrowRight, ChevronDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
+const ADDRESS_BLACKLIST = new Set(['confidential', 'n/a', 'na'])
+
+function canEmbedMap(address) {
+  if (!address) return false
+  const trimmed = String(address).trim()
+  if (!trimmed) return false
+
+  const normalized = trimmed.toLowerCase()
+  if (ADDRESS_BLACKLIST.has(normalized)) return false
+  if (normalized.startsWith('n/a')) return false
+  if (normalized.includes('confidential')) return false
+
+  return true
+}
+
+function googleMapsEmbedSrc(address) {
+  const q = encodeURIComponent(address)
+  return `https://www.google.com/maps?q=${q}&output=embed`
+}
+
 function ResourceCard({ resource, compact = false }) {
+  const address = resource?.address
+  const showMap = canEmbedMap(address)
+
+  const mapRegionId = useId()
+  const [isMapOpen, setIsMapOpen] = useState(false)
+
   return (
     <div
       className={cn(
@@ -39,10 +66,59 @@ function ResourceCard({ resource, compact = false }) {
           </div>
         )}
 
-        {resource.address && !compact && (
-          <div className="flex items-start gap-2 text-sm">
+        {address && (
+          <div className={cn('flex items-start gap-2 text-sm', compact ? 'mt-2' : '')}>
             <MapPin className="w-4 h-4 text-muted-foreground mt-0.5" />
-            <span className="text-muted-foreground">{resource.address}</span>
+            <span className="text-muted-foreground">{address}</span>
+          </div>
+        )}
+
+        {showMap && !compact && (
+          <div className={cn('rounded-xl overflow-hidden border border-border/80', 'mt-3')}>
+            <iframe
+              title={`Map for ${resource.name}`}
+              src={googleMapsEmbedSrc(address)}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              className="w-full h-56"
+              allowFullScreen
+            />
+          </div>
+        )}
+
+        {showMap && compact && (
+          <div className="mt-2">
+            <button
+              type="button"
+              onClick={() => setIsMapOpen((v) => !v)}
+              className="w-full flex items-center justify-between gap-3 px-3 py-2 rounded-xl bg-white border border-border text-sm text-bayou-green hover:border-bayou-blue transition-colors"
+              aria-expanded={isMapOpen}
+              aria-controls={mapRegionId}
+            >
+              <span className="flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-bayou-blue" />
+                View map
+              </span>
+              <ChevronDown
+                className={cn('w-4 h-4 text-muted-foreground transition-transform', isMapOpen && 'rotate-180')}
+              />
+            </button>
+
+            {isMapOpen && (
+              <div
+                id={mapRegionId}
+                className="mt-2 rounded-xl overflow-hidden border border-border/80"
+              >
+                <iframe
+                  title={`Map for ${resource.name}`}
+                  src={googleMapsEmbedSrc(address)}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  className="w-full h-44"
+                  allowFullScreen
+                />
+              </div>
+            )}
           </div>
         )}
 

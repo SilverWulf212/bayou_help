@@ -34,7 +34,7 @@ function Admin() {
       } else {
         setError('Invalid password')
       }
-    } catch (err) {
+    } catch {
       setError('Login failed')
     }
   }
@@ -45,7 +45,7 @@ function Admin() {
       const response = await fetch('/api/resources')
       const data = await response.json()
       setResources(data)
-    } catch (err) {
+    } catch {
       setError('Failed to load resources')
     } finally {
       setLoading(false)
@@ -133,7 +133,7 @@ function Admin() {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-bayou-cream flex items-center justify-center p-4">
+      <div className="min-h-screen hero-backdrop flex items-center justify-center p-4">
         <div className="bg-white rounded-lg p-6 border border-border w-full max-w-sm">
           <div className="flex items-center gap-3 mb-6">
             <Lock className="w-6 h-6 text-bayou-green" />
@@ -175,7 +175,7 @@ function Admin() {
   }
 
   return (
-    <div className="min-h-screen bg-bayou-cream">
+    <div className="min-h-screen hero-backdrop">
       <header className="bg-bayou-green text-white py-3 px-4 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Link to="/" className="hover:opacity-80">
