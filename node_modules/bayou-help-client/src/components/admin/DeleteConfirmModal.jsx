@@ -10,11 +10,11 @@ function DeleteConfirmModal({ isOpen, onClose, onConfirm, resourceName, isLoadin
           <div className="w-10 h-10 rounded-full bg-destructive/10 flex items-center justify-center">
             <AlertTriangle className="w-5 h-5 text-destructive" />
           </div>
-          <h2 className="text-lg font-semibold">Delete Resource</h2>
+          <h2 className="text-lg font-semibold">Delete resource</h2>
         </div>
 
         <p className="text-muted-foreground mb-6">
-          Are you sure you want to delete <strong>{resourceName}</strong>? This action cannot be undone.
+          Delete <strong>{resourceName}</strong>? This can’t be undone.
         </p>
 
         <div className="flex gap-3">

@@ -6,26 +6,26 @@ import { cn } from '../../lib/utils'
 const ERROR_CONFIG = {
   offline: {
     icon: WifiOff,
-    title: "You're offline",
-    message: "No internet connection. Your saved resources are still available, or call 211 for help.",
+    title: "You’re offline",
+    message: "No internet connection. You can still view saved resources. For live help, call 211.",
     iconColor: 'text-yellow-600',
   },
   server: {
     icon: ServerCrash,
-    title: "Something's not working",
-    message: "This isn't your fault. We're fixing it. For help right now, call 211 — it's free.",
+    title: "We can’t load that right now",
+    message: "This isn’t your fault. Please try again. If you need help now, call 211 (free).",
     iconColor: 'text-red-500',
   },
   notFound: {
     icon: Search,
-    title: "No results found",
-    message: "Try different words, or call 211 — a real person can help you find what you need.",
+    title: "No matches",
+    message: "Try different words. If you’d rather talk to someone, call 211.",
     iconColor: 'text-gray-500',
   },
   generic: {
     icon: AlertCircle,
     title: "Something went wrong",
-    message: "Please try again. If this keeps happening, call 211 — they can help you directly.",
+    message: "Please try again. If it keeps happening, call 211 for help.",
     iconColor: 'text-gray-500',
   },
 }
@@ -69,7 +69,7 @@ export function ErrorState({
             className="flex items-center gap-2 px-5 py-3 rounded-xl bg-white border border-border font-medium hover:border-bayou-blue transition-colors"
           >
             <RefreshCw className="w-4 h-4" aria-hidden="true" />
-            Try Again
+            Try again
           </button>
         )}
 
@@ -78,12 +78,12 @@ export function ErrorState({
           className="flex items-center gap-2 px-5 py-3 rounded-xl bg-bayou-green text-white font-medium hover:bg-bayou-green/90 transition-colors"
         >
           <Phone className="w-4 h-4" aria-hidden="true" />
-          Call 211 for Help
+          Call 211
         </a>
       </div>
 
       <p className="mt-6 text-sm text-muted-foreground">
-        211 is free, confidential, and available 24/7
+        211 is free and available 24/7
       </p>
     </motion.div>
   )

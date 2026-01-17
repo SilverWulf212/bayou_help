@@ -9,8 +9,8 @@ function QuickExit() {
     <button
       onClick={handleExit}
       className="quick-exit-trigger bg-destructive hover:bg-destructive/90 text-white p-3 rounded-full shadow-lg transition-colors"
-      aria-label="Quick exit - leave this site"
-      title="Click to leave this site immediately"
+      aria-label="Quick exit: leave this site"
+      title="Quick exit: open Google"
     >
       <X className="w-6 h-6" />
     </button>

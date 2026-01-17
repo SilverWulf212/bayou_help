@@ -6,9 +6,9 @@ import ChatMessage from '../components/chat/ChatMessage'
 import { useChat } from '../hooks/useChat'
 
 const SUGGESTED_PROMPTS = [
-  "I need help finding a place to stay tonight",
-  "Where can I get free food in Lafayette?",
-  "I need to see a doctor but don't have insurance"
+  "I need a safe place to sleep tonight",
+  "Where can I get free food today in Lafayette?",
+  "I need medical care and I don’t have insurance",
 ]
 
 function Chat() {
@@ -32,8 +32,8 @@ function Chat() {
           <ArrowLeft className="w-6 h-6" />
         </Link>
         <div>
-          <h1 className="text-lg font-bold">Bayou Help Chat</h1>
-          <p className="text-xs text-bayou-cream/80">Private • No data saved</p>
+          <h1 className="text-lg font-bold">Chat</h1>
+          <p className="text-xs text-bayou-cream/80">Private • not stored</p>
         </div>
       </header>
 
@@ -42,16 +42,15 @@ function Chat() {
           <div className="space-y-4">
             <div className="bg-white rounded-lg p-4 border border-border">
               <p className="text-bayou-green font-medium mb-2">
-                Hi! I can help you find resources in Acadiana.
+                Hi — I’m here with you.
               </p>
               <p className="text-sm text-muted-foreground">
-                Tell me what you need - shelter, food, healthcare, jobs, or other help.
-                I'll share local resources that might help.
+                Tell me what you need (shelter, food, health care, work, safety). I’ll share local options and phone numbers.
               </p>
             </div>
 
             <div className="space-y-2">
-              <p className="text-sm text-muted-foreground px-1">Try asking:</p>
+              <p className="text-sm text-muted-foreground px-1">Try one of these:</p>
               {SUGGESTED_PROMPTS.map((prompt) => (
                 <button
                   key={prompt}
@@ -86,6 +85,10 @@ function Chat() {
         onSubmit={() => handleSubmit(input)}
         disabled={isLoading}
       />
+
+      <p className="px-4 pb-3 text-center text-[11px] leading-snug text-muted-foreground">
+        Avoid sharing names or account numbers. Resource details can change—call to confirm.
+      </p>
     </div>
   )
 }

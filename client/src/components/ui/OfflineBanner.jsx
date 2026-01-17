@@ -34,17 +34,17 @@ export function OfflineBanner() {
                   <>
                     <Wifi className="w-5 h-5 text-green-600" aria-hidden="true" />
                     <span className="text-sm font-medium text-green-700">
-                      You're back online
+                      Back online
                     </span>
                   </>
                 ) : (
                   <>
                     <WifiOff className="w-5 h-5 text-yellow-600" aria-hidden="true" />
                     <span className="text-sm font-medium text-foreground">
-                      You're offline
+                       Offline
                     </span>
                     <span className="text-sm text-muted-foreground hidden sm:inline">
-                      · Saved resources still available
+                       · Your saved resources are still available
                     </span>
                   </>
                 )}

@@ -80,7 +80,7 @@ export function EmergencyFAB() {
           >
             <div className="p-2">
               <p className="px-3 py-2 text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                Emergency Lines
+                 Need help now
               </p>
 
               {EMERGENCY_LINES.map((line, index) => {
@@ -116,7 +116,7 @@ export function EmergencyFAB() {
 
             <div className="px-4 py-3 bg-muted/50 border-t border-border">
               <p className="text-xs text-muted-foreground text-center">
-                All calls are free & confidential
+                 Calls are free. If it’s not safe to call, use 988 text.
               </p>
             </div>
           </motion.div>

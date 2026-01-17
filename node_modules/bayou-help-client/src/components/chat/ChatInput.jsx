@@ -16,7 +16,7 @@ function ChatInput({ value, onChange, onSubmit, disabled }) {
           value={value}
           onChange={(e) => onChange(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="What kind of help do you need?"
+          placeholder="What do you need help with today?"
           disabled={disabled}
           className="flex-1 px-4 py-3 border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring disabled:opacity-50"
         />
@@ -30,7 +30,7 @@ function ChatInput({ value, onChange, onSubmit, disabled }) {
         </button>
       </div>
       <p className="text-xs text-muted-foreground mt-2 text-center">
-        Your messages are private and not saved
+        Private: messages aren’t saved
       </p>
     </div>
   )

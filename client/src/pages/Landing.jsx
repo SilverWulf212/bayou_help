@@ -38,17 +38,17 @@ function Landing() {
             <div className="hero-glass rounded-3xl border border-border p-6 sm:p-10 soft-rise-in">
               <div className="flex items-center gap-2 text-bayou-green/90">
                 <Heart className="w-4 h-4" />
-                <p className="text-sm">Quiet help, with dignity.</p>
+                <p className="text-sm">A calm place to start.</p>
               </div>
 
               <h2 className="mt-4 text-4xl sm:text-5xl leading-[1.05] font-semibold text-[hsl(var(--hero-ink))]">
-                Find shelter, food, care,
-                <span className="block">and next steps — gently.</span>
+                Find help for shelter, food,
+                <span className="block">health, and more.</span>
               </h2>
 
               <p className="mt-4 text-base sm:text-lg text-muted-foreground max-w-xl">
-                Private, no-judgment support to connect you with resources in Lafayette
-                and surrounding parishes.
+                We’ll help you find local resources in Acadiana. No judgment. Start with a chat
+                or browse the list.
               </p>
 
               <div className="mt-7 flex flex-col sm:flex-row gap-3">
@@ -56,7 +56,7 @@ function Landing() {
                   to="/chat"
                   className="group inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-4 bg-bayou-green text-white shadow-sm hover:bg-bayou-green/90 transition-colors"
                 >
-                  Start a private chat
+                  Start chat
                   <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
                 </Link>
 
@@ -66,14 +66,15 @@ function Landing() {
                 >
                   Browse resources
                   <MapPin className="w-4 h-4 text-bayou-blue" />
+
                 </Link>
               </div>
 
               <div className="mt-7 rounded-2xl bg-white/60 border border-border p-4">
                 <p className="text-xs text-muted-foreground">
-                  <strong>Emergency?</strong> Call 911.{' '}
+                  <strong>In danger or medical emergency?</strong> Call 911.
                   <span className="mx-1">|</span>
-                  <strong>Crisis?</strong> Call 988.
+                  <strong>Need to talk to someone right now?</strong> Call or text 988.
                 </p>
               </div>
             </div>
@@ -164,6 +165,12 @@ function Landing() {
             </section>
           </div>
         </section>
+
+        <footer className="mt-10 pb-4 text-center">
+          <p className="text-xs text-muted-foreground">
+            For privacy, avoid sharing names or account numbers. Resource details can change—call to confirm.
+          </p>
+        </footer>
       </main>
     </div>
   )

@@ -97,7 +97,7 @@ function ResourceCard({ resource, compact = false }) {
             >
               <span className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-bayou-blue" />
-                View map
+                Directions
               </span>
               <ChevronDown
                 className={cn('w-4 h-4 text-muted-foreground transition-transform', isMapOpen && 'rotate-180')}
@@ -132,7 +132,7 @@ function ResourceCard({ resource, compact = false }) {
 
       {resource.eligibility && !compact && (
         <div className="mt-3 pt-3 border-t border-border">
-          <p className="text-xs font-medium text-bayou-green mb-1">Who can get help:</p>
+          <p className="text-xs font-medium text-bayou-green mb-1">Who this is for</p>
           <p className="text-xs text-muted-foreground">{resource.eligibility}</p>
         </div>
       )}
@@ -141,7 +141,7 @@ function ResourceCard({ resource, compact = false }) {
         <div className="mt-3 p-3 bg-bayou-green/5 rounded-md">
           <div className="flex items-center gap-2 text-sm font-medium text-bayou-green">
             <ArrowRight className="w-4 h-4" />
-            What to do:
+            Next step
           </div>
           <p className="text-sm text-muted-foreground mt-1">{resource.nextStep}</p>
         </div>

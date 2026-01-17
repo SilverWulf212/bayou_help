@@ -76,7 +76,7 @@ function Resources() {
         </Link>
         <div>
           <h1 className="text-lg font-bold">Resources</h1>
-          <p className="text-xs text-bayou-cream/80">Find help in Acadiana</p>
+          <p className="text-xs text-bayou-cream/80">Find help near you</p>
         </div>
       </header>
 
@@ -121,14 +121,14 @@ function Resources() {
 
         {error && (
           <div className="bg-destructive/10 text-destructive rounded-lg p-4 text-center">
-            {error}. Please try again.
+            We couldn’t load resources right now. Please try again.
           </div>
         )}
 
         {!loading && !error && resources.length === 0 && (
           <div className="text-center py-12">
             <p className="text-muted-foreground">
-              No resources found for this filter. Try a different parish or category.
+              No matches for those filters. Try another parish or category.
             </p>
           </div>
         )}

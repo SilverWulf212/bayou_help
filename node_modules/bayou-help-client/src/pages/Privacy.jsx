@@ -9,7 +9,7 @@ function Privacy() {
           <ArrowLeft className="w-6 h-6" />
         </Link>
         <div>
-          <h1 className="text-lg font-bold">Your Privacy</h1>
+          <h1 className="text-lg font-bold">Privacy</h1>
           <p className="text-xs text-bayou-cream/80">How we protect you</p>
         </div>
       </header>
@@ -20,11 +20,11 @@ function Privacy() {
             <Shield className="w-8 h-8 text-bayou-green flex-shrink-0" />
             <div>
               <h2 className="text-xl font-semibold text-bayou-green mb-2">
-                Your Safety Comes First
+                Your safety comes first
               </h2>
               <p className="text-muted-foreground">
-                We built Bayou Help with your privacy and safety in mind.
-                Here's what that means for you.
+                Bayou Help is designed for privacy and safety.
+                Here’s what that means.
               </p>
             </div>
           </div>
@@ -36,11 +36,11 @@ function Privacy() {
               <Trash2 className="w-5 h-5 text-bayou-blue mt-0.5" />
               <div>
                 <h3 className="font-semibold text-bayou-green mb-1">
-                  No Data Saved
+                  No chat history saved
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  Your chat messages are not stored. When you close the page,
-                  everything you typed is gone. We don't track what you search for.
+                  We don’t store your chat messages. When you refresh or close the page,
+                  this chat disappears. We don’t ask for your name.
                 </p>
               </div>
             </div>
@@ -51,12 +51,10 @@ function Privacy() {
               <Eye className="w-5 h-5 text-bayou-blue mt-0.5" />
               <div>
                 <h3 className="font-semibold text-bayou-green mb-1">
-                  Quick Exit Button
-                </h3>
+                  Quick exit button                </h3>
                 <p className="text-sm text-muted-foreground">
-                  See the X button in the bottom corner? Click it to instantly
-                  leave this site and go to Google. Use it if someone walks in
-                  and you need to hide what you're looking at.
+                  See the X button in the corner? Tap it to leave this site instantly.
+                  It will open Google.
                 </p>
               </div>
             </div>
@@ -64,40 +62,40 @@ function Privacy() {
 
           <div className="bg-white rounded-lg p-5 border border-border">
             <h3 className="font-semibold text-bayou-green mb-2">
-              Browser Safety Tips
+              Browser safety tips
             </h3>
             <ul className="text-sm text-muted-foreground space-y-2">
-              <li>• Use incognito/private mode for extra privacy</li>
-              <li>• Clear your browser history when done</li>
-              <li>• Use a library computer if your device isn't safe</li>
+              <li>• Use a private/incognito window</li>
+              <li>• Clear your browser history when you’re done</li>
+              <li>• If your phone isn’t safe, use a trusted device (like at a library)</li>
             </ul>
           </div>
         </div>
 
         <section className="mt-8 bg-bayou-green/10 rounded-lg p-6">
           <h3 className="font-semibold text-bayou-green mb-3">
-            Crisis Resources
+            Need help right now?
           </h3>
           <div className="space-y-3 text-sm">
             <p>
-              <strong>National Suicide Prevention:</strong>{' '}
-              <a href="tel:988" className="text-bayou-blue underline">988</a>
+              <strong>Suicide & Crisis Lifeline:</strong>{' '}
+              <a href="tel:988" className="text-bayou-blue underline">Call or text 988</a>
             </p>
             <p>
               <strong>National Domestic Violence Hotline:</strong>{' '}
               <a href="tel:1-800-799-7233" className="text-bayou-blue underline">
-                1-800-799-7233
+                Call 1-800-799-7233
               </a>
             </p>
             <p>
-              <strong>Faith House (Acadiana DV):</strong>{' '}
+              <strong>Faith House (Acadiana):</strong>{' '}
               <a href="tel:337-232-8954" className="text-bayou-blue underline">
-                337-232-8954
+                Call 337-232-8954
               </a>
             </p>
             <p>
               <strong>Emergency:</strong>{' '}
-              <a href="tel:911" className="text-bayou-blue underline">911</a>
+              <a href="tel:911" className="text-bayou-blue underline">Call 911</a>
             </p>
           </div>
         </section>
