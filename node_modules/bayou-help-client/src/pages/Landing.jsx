@@ -52,8 +52,7 @@ function Landing() {
               </div>
 
               <h2 className="mt-4 text-4xl sm:text-5xl leading-[1.05] font-semibold text-[hsl(var(--hero-ink))]">
-                Find help for shelter, food,
-                <span className="block">health, and more.</span>
+                Find help for shelter, food, health, and more.
               </h2>
 
               <p className="mt-4 text-base sm:text-lg text-muted-foreground max-w-xl">
