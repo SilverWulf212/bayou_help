@@ -105,7 +105,7 @@ When reporting a vulnerability, please include:
 
 ## 🚧 Known Limitations
 
-1. **Default Admin Password**: The application includes a default fallback password in the code for development purposes. **You MUST set a strong password via the ADMIN_PASSWORD environment variable in production.** Use a password manager to generate a secure random password (minimum 20 characters recommended).
+1. **Default Admin Password**: The application includes a default fallback password in the code (`server/src/middleware/auth.js` and `server/src/routes/admin.js`) for development convenience. **You MUST set a strong password via the ADMIN_PASSWORD environment variable in production.** Use a password manager or `openssl rand -base64 32` to generate a secure random password (minimum 20 characters recommended).
 
 2. **HTTP in Development**: Development mode uses HTTP. Production deployments should use HTTPS.
 

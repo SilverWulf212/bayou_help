@@ -34,7 +34,8 @@ Thank you for your interest in contributing to Bayou Help! This project aims to 
 
 - **JavaScript/React**: Follow the existing ESLint configuration
 - **Run linting**: `npm run lint` before committing
-- **File names**: Use kebab-case for files (e.g., `resource-card.jsx`)
+- **File names**: Use kebab-case for files (e.g., `resource-card.js`, `resource-card.jsx`)
+- **File extensions**: Use `.jsx` for files containing JSX, `.js` for plain JavaScript
 - **Component names**: Use PascalCase for React components
 
 ### Commit Messages
