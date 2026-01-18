@@ -1,4 +1,5 @@
 import { useId, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Phone, MapPin, Clock, ArrowRight, ChevronDown } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -36,15 +37,31 @@ function ResourceCard({ resource, compact = false }) {
         compact ? 'p-3' : 'p-4'
       )}
     >
-      <div className="flex items-start justify-between gap-2">
-        <div>
-          <h3 className={cn('font-semibold text-bayou-green', compact ? 'text-sm' : '')}>
-            {resource.name}
-          </h3>
+      <div className="flex items-start justify-between gap-3">
+        <div className="min-w-0">
+          {compact ? (
+            <h3 className={cn('font-semibold text-bayou-green', compact ? 'text-sm' : '')}>
+              {resource.name}
+            </h3>
+          ) : (
+            <Link to={`/resources/${resource.id}`} className="block hover:underline">
+              <h3 className={cn('font-semibold text-bayou-green', compact ? 'text-sm' : '')}>
+                {resource.name}
+              </h3>
+            </Link>
+          )}
           <span className="inline-block text-xs bg-bayou-cream text-bayou-green px-2 py-0.5 rounded mt-1">
             {resource.categoryLabel || resource.category}
           </span>
         </div>
+        {!compact && (
+          <Link
+            to={`/resources/${resource.id}`}
+            className="shrink-0 text-xs px-3 py-1.5 rounded-full border border-border text-bayou-green hover:border-bayou-blue transition-colors"
+          >
+            Details
+          </Link>
+        )}
       </div>
 
       {resource.description && !compact && (
