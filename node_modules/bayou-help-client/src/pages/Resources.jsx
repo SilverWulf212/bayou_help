@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
-import { ArrowLeft, Filter } from 'lucide-react'
+import { useSearchParams } from 'react-router-dom'
+import { Filter } from 'lucide-react'
 import ResourceCard from '../components/resources/ResourceCard'
+import PageHero from '../components/ui/PageHero'
+import ScrollFadeIn from '../components/ui/ScrollFadeIn'
 
 const PARISHES = [
   { value: '', label: 'All Parishes' },
@@ -70,15 +72,13 @@ function Resources() {
 
   return (
     <div className="min-h-screen bg-bayou-cream">
-      <header className="bg-bayou-green text-white py-3 px-4 flex items-center gap-4">
-        <Link to="/" className="hover:opacity-80">
-          <ArrowLeft className="w-6 h-6" />
-        </Link>
-        <div>
-          <h1 className="text-lg font-bold">Resources</h1>
-          <p className="text-xs text-bayou-cream/80">Find help near you</p>
-        </div>
-      </header>
+      <PageHero
+        title="Resources"
+        subtitle="Find help near you"
+        imageSrc="/2026-01-17 17-09-08.webp"
+        imageAlt="Saint Joseph's Diner community meal service"
+        height="140px"
+      />
 
       <div className="sticky top-0 bg-white border-b border-border p-4 z-10">
         <div className="container mx-auto flex flex-col sm:flex-row gap-3">
@@ -121,7 +121,7 @@ function Resources() {
 
         {error && (
           <div className="bg-destructive/10 text-destructive rounded-lg p-4 text-center">
-            We couldn’t load resources right now. Please try again.
+            We couldn't load resources right now. Please try again.
           </div>
         )}
 
@@ -135,8 +135,10 @@ function Resources() {
 
         {!loading && !error && resources.length > 0 && (
           <div className="space-y-4">
-            {resources.map((resource) => (
-              <ResourceCard key={resource.id} resource={resource} />
+            {resources.map((resource, index) => (
+              <ScrollFadeIn key={resource.id} delay={index * 50}>
+                <ResourceCard resource={resource} />
+              </ScrollFadeIn>
             ))}
           </div>
         )}

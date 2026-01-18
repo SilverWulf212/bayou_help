@@ -107,4 +107,33 @@
       transform: translateY(0);
     }
   }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .card-lift {
+    transition: transform 300ms ease-out, box-shadow 300ms ease-out;
+  }
+
+  .card-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(16, 38, 28, 0.12);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .soft-fade-in,
+    .soft-rise-in {
+      animation: none;
+    }
+
+    .card-lift:hover {
+      transform: none;
+    }
+  }
 }

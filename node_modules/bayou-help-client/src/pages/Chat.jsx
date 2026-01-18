@@ -1,14 +1,14 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { ArrowLeft } from 'lucide-react'
 import ChatInput from '../components/chat/ChatInput'
 import ChatMessage from '../components/chat/ChatMessage'
+import PageHero from '../components/ui/PageHero'
+import ScrollFadeIn from '../components/ui/ScrollFadeIn'
 import { useChat } from '../hooks/useChat'
 
 const SUGGESTED_PROMPTS = [
   "I need a safe place to sleep tonight",
   "Where can I get free food today in Lafayette?",
-  "I need medical care and I don’t have insurance",
+  "I need medical care and I don't have insurance",
 ]
 
 function Chat() {
@@ -27,38 +27,39 @@ function Chat() {
 
   return (
     <div className="flex flex-col h-screen bg-bayou-cream">
-      <header className="bg-bayou-green text-white py-3 px-4 flex items-center gap-4">
-        <Link to="/" className="hover:opacity-80">
-          <ArrowLeft className="w-6 h-6" />
-        </Link>
-        <div>
-          <h1 className="text-lg font-bold">Chat</h1>
-          <p className="text-xs text-bayou-cream/80">Private • not stored</p>
-        </div>
-      </header>
+      <PageHero
+        title="Chat"
+        subtitle="Private • not stored"
+        imageSrc="/2026-01-17 17-03-08.webp"
+        imageAlt="Shelter entrance with All Welcome sign"
+        height="140px"
+      />
 
-        <main className="flex-1 overflow-y-auto p-4 space-y-4 hero-backdrop">
+      <main className="flex-1 overflow-y-auto p-4 space-y-4 hero-backdrop">
         {messages.length === 0 && (
           <div className="space-y-4">
-            <div className="bg-white rounded-lg p-4 border border-border">
-              <p className="text-bayou-green font-medium mb-2">
-                Hi — I’m here with you.
-              </p>
-              <p className="text-sm text-muted-foreground">
-                Tell me what you need (shelter, food, health care, work, safety). I’ll share local options and phone numbers.
-              </p>
-            </div>
+            <ScrollFadeIn delay={0}>
+              <div className="bg-white rounded-lg p-4 border border-border">
+                <p className="text-bayou-green font-medium mb-2">
+                  Hi — I'm here with you.
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Tell me what you need (shelter, food, health care, work, safety). I'll share local options and phone numbers.
+                </p>
+              </div>
+            </ScrollFadeIn>
 
             <div className="space-y-2">
               <p className="text-sm text-muted-foreground px-1">Try one of these:</p>
-              {SUGGESTED_PROMPTS.map((prompt) => (
-                <button
-                  key={prompt}
-                  onClick={() => handleSuggestion(prompt)}
-                  className="block w-full text-left px-4 py-3 bg-white rounded-lg border border-border hover:border-bayou-blue transition-colors text-sm"
-                >
-                  {prompt}
-                </button>
+              {SUGGESTED_PROMPTS.map((prompt, index) => (
+                <ScrollFadeIn key={prompt} delay={(index + 1) * 100}>
+                  <button
+                    onClick={() => handleSuggestion(prompt)}
+                    className="block w-full text-left px-4 py-3 bg-white rounded-lg border border-border hover:border-bayou-blue transition-colors text-sm card-lift"
+                  >
+                    {prompt}
+                  </button>
+                </ScrollFadeIn>
               ))}
             </div>
           </div>

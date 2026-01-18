@@ -1,41 +1,51 @@
 import { Link } from 'react-router-dom'
 import { ArrowRight, Heart, MessageCircle, MapPin, Shield } from 'lucide-react'
+import HeroImage from '../components/ui/HeroImage'
+import ScrollFadeIn from '../components/ui/ScrollFadeIn'
+import ImageGalleryStrip from '../components/ui/ImageGalleryStrip'
 
 function Landing() {
   return (
-    <div className="min-h-screen hero-backdrop">
-      <header className="px-4 pt-6">
-        <div className="container mx-auto flex items-center justify-between">
-          <div className="soft-fade-in">
-            <p className="text-xs tracking-[0.22em] uppercase text-muted-foreground">
-              Acadiana Community Support
-            </p>
-            <h1 className="mt-1 text-2xl sm:text-3xl font-semibold text-bayou-green">
-              Bayou Help
-            </h1>
-          </div>
+    <div className="min-h-screen bg-background">
+      <HeroImage
+        src="/2026-01-17 17-00-53.webp"
+        alt="Community soup kitchen with warm lighting"
+        height="auto"
+        overlayOpacity={0.5}
+        overlayColor="16, 38, 28"
+        className="min-h-[60vh] sm:min-h-[70vh]"
+      >
+        <header className="px-4 pt-6">
+          <div className="container mx-auto flex items-center justify-between">
+            <div className="soft-fade-in">
+              <p className="text-xs tracking-[0.22em] uppercase text-white/80">
+                Acadiana Community Support
+              </p>
+              <h1 className="mt-1 text-2xl sm:text-3xl font-semibold text-white">
+                Bayou Help
+              </h1>
+            </div>
 
-          <div className="flex items-center gap-2 soft-fade-in">
-            <Link
-              to="/privacy"
-              className="rounded-full px-4 py-2 text-sm bg-white/70 border border-border hover:bg-white transition-colors"
-            >
-              Privacy
-            </Link>
-            <Link
-              to="/admin"
-              className="rounded-full px-4 py-2 text-sm bg-white/70 border border-border hover:bg-white transition-colors"
-            >
-              Admin
-            </Link>
+            <div className="flex items-center gap-2 soft-fade-in">
+              <Link
+                to="/privacy"
+                className="rounded-full px-4 py-2 text-sm bg-white/20 border border-white/30 text-white hover:bg-white/30 transition-colors"
+              >
+                Privacy
+              </Link>
+              <Link
+                to="/admin"
+                className="rounded-full px-4 py-2 text-sm bg-white/20 border border-white/30 text-white hover:bg-white/30 transition-colors"
+              >
+                Admin
+              </Link>
+            </div>
           </div>
-        </div>
-      </header>
+        </header>
 
-      <main className="container mx-auto px-4 pb-12 pt-8">
-        <section className="grid gap-10 lg:grid-cols-12 items-start">
-          <div className="lg:col-span-7">
-            <div className="hero-glass rounded-3xl border border-border p-6 sm:p-10 soft-rise-in">
+        <div className="flex-1 flex items-center">
+          <div className="container mx-auto px-4 py-8">
+            <div className="hero-glass rounded-3xl border border-white/20 p-6 sm:p-10 soft-rise-in max-w-2xl">
               <div className="flex items-center gap-2 text-bayou-green/90">
                 <Heart className="w-4 h-4" />
                 <p className="text-sm">A calm place to start.</p>
@@ -47,7 +57,7 @@ function Landing() {
               </h2>
 
               <p className="mt-4 text-base sm:text-lg text-muted-foreground max-w-xl">
-                We’ll help you find local resources in Acadiana. No judgment. Start with a chat
+                We'll help you find local resources in Acadiana. No judgment. Start with a chat
                 or browse the list.
               </p>
 
@@ -66,7 +76,6 @@ function Landing() {
                 >
                   Browse resources
                   <MapPin className="w-4 h-4 text-bayou-blue" />
-
                 </Link>
               </div>
 
@@ -79,11 +88,15 @@ function Landing() {
               </div>
             </div>
           </div>
+        </div>
+      </HeroImage>
 
-          <div className="lg:col-span-5 space-y-4">
+      <main className="container mx-auto px-4 pb-12 pt-8 hero-backdrop">
+        <div className="grid gap-4 lg:grid-cols-3">
+          <ScrollFadeIn delay={0}>
             <Link
               to="/chat"
-              className="block hero-glass rounded-3xl border border-border p-5 sm:p-6 soft-rise-in stagger-1 hover:bg-white/80 transition-colors"
+              className="block hero-glass rounded-3xl border border-border p-5 sm:p-6 hover:bg-white/80 transition-colors card-lift h-full"
             >
               <div className="flex items-start gap-4">
                 <div className="w-11 h-11 rounded-2xl bg-bayou-blue/15 flex items-center justify-center">
@@ -97,10 +110,12 @@ function Landing() {
                 </div>
               </div>
             </Link>
+          </ScrollFadeIn>
 
+          <ScrollFadeIn delay={100}>
             <Link
               to="/resources"
-              className="block hero-glass rounded-3xl border border-border p-5 sm:p-6 soft-rise-in stagger-2 hover:bg-white/80 transition-colors"
+              className="block hero-glass rounded-3xl border border-border p-5 sm:p-6 hover:bg-white/80 transition-colors card-lift h-full"
             >
               <div className="flex items-start gap-4">
                 <div className="w-11 h-11 rounded-2xl bg-bayou-green/10 flex items-center justify-center">
@@ -114,10 +129,12 @@ function Landing() {
                 </div>
               </div>
             </Link>
+          </ScrollFadeIn>
 
+          <ScrollFadeIn delay={200}>
             <Link
               to="/privacy"
-              className="block hero-glass rounded-3xl border border-border p-5 sm:p-6 soft-rise-in stagger-3 hover:bg-white/80 transition-colors"
+              className="block hero-glass rounded-3xl border border-border p-5 sm:p-6 hover:bg-white/80 transition-colors card-lift h-full"
             >
               <div className="flex items-start gap-4">
                 <div className="w-11 h-11 rounded-2xl bg-bayou-gold/20 flex items-center justify-center">
@@ -131,42 +148,48 @@ function Landing() {
                 </div>
               </div>
             </Link>
+          </ScrollFadeIn>
+        </div>
 
-            <section className="rounded-3xl border border-border bg-white/60 p-5 sm:p-6">
-              <h3 className="text-sm tracking-[0.18em] uppercase text-muted-foreground">
-                Quick paths
-              </h3>
-              <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                <Link
-                  to="/resources?category=shelter"
-                  className="rounded-2xl px-4 py-3 bg-white/70 border border-border hover:bg-white transition-colors text-center text-sm"
-                >
-                  Shelter
-                </Link>
-                <Link
-                  to="/resources?category=food"
-                  className="rounded-2xl px-4 py-3 bg-white/70 border border-border hover:bg-white transition-colors text-center text-sm"
-                >
-                  Food
-                </Link>
-                <Link
-                  to="/resources?category=health"
-                  className="rounded-2xl px-4 py-3 bg-white/70 border border-border hover:bg-white transition-colors text-center text-sm"
-                >
-                  Medical
-                </Link>
-                <Link
-                  to="/resources?category=crisis"
-                  className="rounded-2xl px-4 py-3 bg-white/70 border border-border hover:bg-white transition-colors text-center text-sm"
-                >
-                  Crisis
-                </Link>
-              </div>
-            </section>
-          </div>
-        </section>
+        <ScrollFadeIn delay={300} className="mt-8">
+          <section className="rounded-3xl border border-border bg-white/60 p-5 sm:p-6">
+            <h3 className="text-sm tracking-[0.18em] uppercase text-muted-foreground">
+              Quick paths
+            </h3>
+            <div className="mt-4 grid gap-3 sm:grid-cols-4">
+              <Link
+                to="/resources?category=shelter"
+                className="rounded-2xl px-4 py-3 bg-white/70 border border-border hover:bg-white transition-colors text-center text-sm card-lift"
+              >
+                Shelter
+              </Link>
+              <Link
+                to="/resources?category=food"
+                className="rounded-2xl px-4 py-3 bg-white/70 border border-border hover:bg-white transition-colors text-center text-sm card-lift"
+              >
+                Food
+              </Link>
+              <Link
+                to="/resources?category=health"
+                className="rounded-2xl px-4 py-3 bg-white/70 border border-border hover:bg-white transition-colors text-center text-sm card-lift"
+              >
+                Medical
+              </Link>
+              <Link
+                to="/resources?category=crisis"
+                className="rounded-2xl px-4 py-3 bg-white/70 border border-border hover:bg-white transition-colors text-center text-sm card-lift"
+              >
+                Crisis
+              </Link>
+            </div>
+          </section>
+        </ScrollFadeIn>
 
-        <footer className="mt-10 pb-4 text-center">
+        <ScrollFadeIn delay={400}>
+          <ImageGalleryStrip />
+        </ScrollFadeIn>
+
+        <footer className="mt-6 pb-4 text-center">
           <p className="text-xs text-muted-foreground">
             For privacy, avoid sharing names or account numbers. Resource details can change—call to confirm.
           </p>

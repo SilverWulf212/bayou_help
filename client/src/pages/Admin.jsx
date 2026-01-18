@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, Lock, Plus, Pencil, Trash2 } from 'lucide-react'
+import { Lock, Plus, Pencil, Trash2 } from 'lucide-react'
 import ResourceFormModal from '../components/admin/ResourceFormModal'
 import DeleteConfirmModal from '../components/admin/DeleteConfirmModal'
+import PageHero from '../components/ui/PageHero'
+import ScrollFadeIn from '../components/ui/ScrollFadeIn'
 
 function Admin() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -175,23 +177,25 @@ function Admin() {
   }
 
   return (
-    <div className="min-h-screen hero-backdrop">
-      <header className="bg-bayou-green text-white py-3 px-4 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <Link to="/" className="hover:opacity-80">
-            <ArrowLeft className="w-6 h-6" />
-          </Link>
-          <h1 className="text-lg font-bold">Admin Panel</h1>
-        </div>
+    <div className="min-h-screen bg-bayou-cream">
+      <PageHero
+        title="Admin Panel"
+        subtitle="Manage community resources"
+        imageSrc="/2026-01-17 17-10-31.webp"
+        imageAlt="FEMA relief operations"
+        height="140px"
+      />
+
+      <div className="absolute top-3 right-4 z-20">
         <button
           onClick={() => setIsAuthenticated(false)}
-          className="text-sm text-bayou-cream/80 hover:text-white"
+          className="text-sm text-white/80 hover:text-white"
         >
           Logout
         </button>
-      </header>
+      </div>
 
-      <main className="container mx-auto px-4 py-6">
+      <main className="container mx-auto px-4 py-6 hero-backdrop">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-semibold text-bayou-green">
             Resources ({resources.length})
@@ -218,32 +222,31 @@ function Admin() {
         )}
 
         <div className="space-y-3">
-          {resources.map((resource) => (
-            <div
-              key={resource.id}
-              className="bg-white rounded-lg p-4 border border-border flex items-start justify-between"
-            >
-              <div>
-                <h3 className="font-semibold text-bayou-green">{resource.name}</h3>
-                <p className="text-sm text-muted-foreground">
-                  {resource.parish} • {resource.category}
-                </p>
+          {resources.map((resource, index) => (
+            <ScrollFadeIn key={resource.id} delay={index * 50}>
+              <div className="bg-white rounded-lg p-4 border border-border flex items-start justify-between">
+                <div>
+                  <h3 className="font-semibold text-bayou-green">{resource.name}</h3>
+                  <p className="text-sm text-muted-foreground">
+                    {resource.parish} • {resource.category}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handleEditClick(resource)}
+                    className="p-2 text-muted-foreground hover:text-bayou-blue"
+                  >
+                    <Pencil className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => handleDeleteClick(resource)}
+                    className="p-2 text-muted-foreground hover:text-destructive"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => handleEditClick(resource)}
-                  className="p-2 text-muted-foreground hover:text-bayou-blue"
-                >
-                  <Pencil className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => handleDeleteClick(resource)}
-                  className="p-2 text-muted-foreground hover:text-destructive"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
+            </ScrollFadeIn>
           ))}
         </div>
       </main>
