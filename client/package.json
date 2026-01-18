@@ -4,10 +4,10 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "node scripts/run-vite.mjs",
+    "build": "node scripts/run-vite.mjs build",
     "lint": "eslint .",
-    "preview": "vite preview",
+    "preview": "node scripts/run-vite.mjs preview",
     "optimize:public": "node scripts/optimize-public-images.mjs"
   },
   "dependencies": {
