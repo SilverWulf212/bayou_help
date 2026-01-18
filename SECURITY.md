@@ -105,7 +105,7 @@ When reporting a vulnerability, please include:
 
 ## 🚧 Known Limitations
 
-1. **Default Admin Password**: The application includes a default fallback password (`bayou-admin-2024`). **This MUST be changed via environment variables in production.**
+1. **Default Admin Password**: The application includes a default fallback password in the code for development purposes. **You MUST set a strong password via the ADMIN_PASSWORD environment variable in production.** Use a password manager to generate a secure random password (minimum 20 characters recommended).
 
 2. **HTTP in Development**: Development mode uses HTTP. Production deployments should use HTTPS.
 
@@ -117,7 +117,9 @@ If you're deploying Bayou Help, please:
 
 1. **Set Strong Passwords**
    ```bash
-   ADMIN_PASSWORD=your-very-strong-random-password
+   # Use a password manager to generate secure random passwords
+   # Minimum 20 characters recommended
+   ADMIN_PASSWORD=your-very-secure-random-password-from-password-manager
    ```
 
 2. **Use HTTPS**
