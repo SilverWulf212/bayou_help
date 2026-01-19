@@ -12,11 +12,16 @@ async function loadResources() {
 
   try {
     const data = await readFile(RESOURCES_PATH, 'utf-8')
-    resourcesCache = JSON.parse(data)
+    try {
+      resourcesCache = JSON.parse(data)
+    } catch (parseError) {
+      console.error('Failed to parse resources.json:', parseError.message)
+      return resourcesCache || []
+    }
     return resourcesCache
   } catch (error) {
     console.error('Failed to load resources:', error.message)
-    return []
+    return resourcesCache || []
   }
 }
 

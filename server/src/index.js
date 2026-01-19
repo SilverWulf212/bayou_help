@@ -240,6 +240,22 @@ app.use((err, req, res, _next) => {
   })
 })
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Bayou Help server running on port ${PORT}`)
 })
+
+function gracefulShutdown(signal) {
+  console.log(`\n${signal} received. Shutting down gracefully...`)
+  server.close(() => {
+    console.log('Server closed. Exiting.')
+    process.exit(0)
+  })
+
+  setTimeout(() => {
+    console.error('Forced shutdown after timeout.')
+    process.exit(1)
+  }, 10000)
+}
+
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'))
+process.on('SIGINT', () => gracefulShutdown('SIGINT'))

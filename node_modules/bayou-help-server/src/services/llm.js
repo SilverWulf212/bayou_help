@@ -86,6 +86,9 @@ export async function generateResponse(userMessage, history, resources) {
     { role: 'user', content: userMessage }
   ]
 
+  const controller = new AbortController()
+  const timeout = setTimeout(() => controller.abort(), 30000)
+
   try {
     const response = await fetch(`${OLLAMA_URL}/api/chat`, {
       method: 'POST',
@@ -99,8 +102,11 @@ export async function generateResponse(userMessage, history, resources) {
           top_p: 0.9,
           num_predict: 256
         }
-      })
+      }),
+      signal: controller.signal
     })
+
+    clearTimeout(timeout)
 
     if (!response.ok) {
       throw new Error(`Ollama error: ${response.status}`)
@@ -118,6 +124,7 @@ export async function generateResponse(userMessage, history, resources) {
       citations
     }
   } catch (error) {
+    clearTimeout(timeout)
     console.error('LLM Error:', error.message)
     return generateFallbackResponse(userMessage, resources)
   }

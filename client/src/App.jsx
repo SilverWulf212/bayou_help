@@ -6,13 +6,15 @@ import ResourceDetail from './pages/ResourceDetail'
 import Privacy from './pages/Privacy'
 import Admin from './pages/Admin'
 import QuickExit from './components/common/QuickExit'
+import FooterNav from './components/common/FooterNav'
+import ErrorBoundary from './components/ErrorBoundary'
 import { useSeoMeta } from './hooks/useSeoMeta'
 
 function App() {
   useSeoMeta()
 
   return (
-    <>
+    <ErrorBoundary>
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/chat" element={<Chat />} />
@@ -21,8 +23,9 @@ function App() {
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/admin" element={<Admin />} />
       </Routes>
+      <FooterNav />
       <QuickExit />
-    </>
+    </ErrorBoundary>
   )
 }
 

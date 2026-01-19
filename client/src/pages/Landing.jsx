@@ -16,7 +16,7 @@ function Landing() {
         className="min-h-[60vh] sm:min-h-[70vh]"
       >
         <header className="px-4 pt-6">
-          <div className="container mx-auto flex items-center justify-between">
+          <div className="container mx-auto">
             <div className="soft-fade-in">
               <p className="text-xs tracking-[0.22em] uppercase text-white/80">
                 Acadiana Community Support
@@ -24,21 +24,6 @@ function Landing() {
               <h1 className="mt-1 text-2xl sm:text-3xl font-semibold text-white">
                 Bayou Help
               </h1>
-            </div>
-
-            <div className="flex items-center gap-2 soft-fade-in">
-              <Link
-                to="/privacy"
-                className="rounded-full px-4 py-2 text-sm bg-white/20 border border-white/30 text-white hover:bg-white/30 transition-colors"
-              >
-                Privacy
-              </Link>
-              <Link
-                to="/admin"
-                className="rounded-full px-4 py-2 text-sm bg-white/20 border border-white/30 text-white hover:bg-white/30 transition-colors"
-              >
-                Admin
-              </Link>
             </div>
           </div>
         </header>

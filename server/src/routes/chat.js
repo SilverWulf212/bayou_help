@@ -20,12 +20,23 @@ function checkSafetyEscalation(message) {
   return null
 }
 
+const MAX_MESSAGE_LENGTH = 10000
+const MAX_HISTORY_ENTRIES = 50
+
 router.post('/', async (req, res, next) => {
   try {
     const { message, history = [] } = req.body
 
     if (!message || typeof message !== 'string') {
       return res.status(400).json({ error: 'Message is required' })
+    }
+
+    if (message.length > MAX_MESSAGE_LENGTH) {
+      return res.status(400).json({ error: 'Message too long' })
+    }
+
+    if (!Array.isArray(history) || history.length > MAX_HISTORY_ENTRIES) {
+      return res.status(400).json({ error: 'Invalid history' })
     }
 
     const safetyCheck = checkSafetyEscalation(message)

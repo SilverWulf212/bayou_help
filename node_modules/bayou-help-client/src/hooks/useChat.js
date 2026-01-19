@@ -1,12 +1,17 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useRef } from 'react'
 
 export function useChat() {
   const [messages, setMessages] = useState([])
   const [isLoading, setIsLoading] = useState(false)
+  const messagesRef = useRef([])
 
   const sendMessage = useCallback(async (content) => {
+    if (isLoading) return
+
     const userMessage = { role: 'user', content }
-    setMessages((prev) => [...prev, userMessage])
+    const currentHistory = messagesRef.current
+    messagesRef.current = [...currentHistory, userMessage]
+    setMessages(messagesRef.current)
     setIsLoading(true)
 
     try {
@@ -15,7 +20,7 @@ export function useChat() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: content,
-          history: messages,
+          history: currentHistory,
         }),
       })
 
@@ -32,21 +37,25 @@ export function useChat() {
         citations: data.citations || [],
       }
 
-      setMessages((prev) => [...prev, assistantMessage])
-    } catch {
+      messagesRef.current = [...messagesRef.current, assistantMessage]
+      setMessages(messagesRef.current)
+    } catch (error) {
+      console.error('Chat error:', error)
       const errorMessage = {
         role: 'assistant',
         content:
           "I'm sorry, I couldn't process your request right now. " +
           "Please try again, or call 211 to speak with someone who can help.",
       }
-      setMessages((prev) => [...prev, errorMessage])
+      messagesRef.current = [...messagesRef.current, errorMessage]
+      setMessages(messagesRef.current)
     } finally {
       setIsLoading(false)
     }
-  }, [messages])
+  }, [isLoading])
 
   const clearMessages = useCallback(() => {
+    messagesRef.current = []
     setMessages([])
   }, [])
 

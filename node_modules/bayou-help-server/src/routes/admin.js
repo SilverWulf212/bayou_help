@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { verifyAdmin } from '../middleware/auth.js'
+import { loginRateLimiter } from '../middleware/rateLimit.js'
 import {
   createResource,
   updateResource,
@@ -11,7 +12,7 @@ const router = Router()
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'bayou-admin-2024'
 
-router.post('/login', (req, res) => {
+router.post('/login', loginRateLimiter, (req, res) => {
   const { password } = req.body
 
   if (password === ADMIN_PASSWORD) {
