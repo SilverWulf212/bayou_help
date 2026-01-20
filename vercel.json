@@ -1,8 +1,8 @@
 {
   "framework": "vite",
   "installCommand": "npm ci",
-  "buildCommand": "npm run build -w bayou-help-client",
-  "outputDirectory": "client/dist",
+  "buildCommand": "npm run build -w bayou-help-client && node scripts/vercel-copy-client-dist.mjs",
+  "outputDirectory": "dist",
   "rewrites": [
     {
       "source": "/api/(.*)",
