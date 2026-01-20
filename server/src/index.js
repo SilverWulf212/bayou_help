@@ -5,6 +5,7 @@ import path from 'path'
 import chatRoutes from './routes/chat.js'
 import resourcesRoutes from './routes/resources.js'
 import adminRoutes from './routes/admin.js'
+import resumeRoutes from './routes/resume.js'
 import { rateLimiter } from './middleware/rateLimit.js'
 import { PUBLIC_ROUTES, resourceSeo, routeSeo } from '../../shared/seo.js'
 import { getAllResources, getResourceById } from './services/resources.js'
@@ -28,11 +29,12 @@ app.use(cors({
     ? PROD_ORIGIN
     : CLIENT_ORIGIN
 }))
-app.use(express.json())
+app.use(express.json({ limit: '100kb' }))
 
 app.use('/api/chat', rateLimiter, chatRoutes)
 app.use('/api/resources', resourcesRoutes)
 app.use('/api/admin', adminRoutes)
+app.use('/api/resume', rateLimiter, resumeRoutes)
 
 // --- SEO endpoints ---
 app.get('/robots.txt', (req, res) => {
@@ -167,7 +169,7 @@ app.get('/api/health', (req, res) => {
 })
 
 // Serve HTML for public SPA routes with per-route SEO tags.
-app.get(['/', '/chat', '/resources', '/privacy', '/admin'], async (req, res, next) => {
+app.get(['/', '/chat', '/resources', '/resume', '/privacy', '/admin'], async (req, res, next) => {
   try {
     const pathname = req.path
     const seo = routeSeo(pathname)

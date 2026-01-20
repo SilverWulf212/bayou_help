@@ -5,8 +5,8 @@ import Resources from './pages/Resources'
 import ResourceDetail from './pages/ResourceDetail'
 import Privacy from './pages/Privacy'
 import Admin from './pages/Admin'
-import QuickExit from './components/common/QuickExit'
-import FooterNav from './components/common/FooterNav'
+import ResumeBuilder from './pages/ResumeBuilder'
+import TopNav from './components/common/TopNav'
 import ErrorBoundary from './components/ErrorBoundary'
 import { useSeoMeta } from './hooks/useSeoMeta'
 
@@ -21,10 +21,10 @@ function App() {
         <Route path="/resources" element={<Resources />} />
         <Route path="/resources/:id" element={<ResourceDetail />} />
         <Route path="/privacy" element={<Privacy />} />
+        <Route path="/resume" element={<ResumeBuilder />} />
         <Route path="/admin" element={<Admin />} />
       </Routes>
-      <FooterNav />
-      <QuickExit />
+      <TopNav />
     </ErrorBoundary>
   )
 }

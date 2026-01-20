@@ -6,9 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Bayou Help is a community resource finder for Acadiana, Louisiana. It helps people find local resources for shelter, food, healthcare, jobs, and other needs through an AI-powered chat interface and a browsable resource directory.
 
-**Target users**: People in difficult situations who need help finding local services. Content is written at a 6th grade reading level.
-
-**Critical safety feature**: QuickExit button (bottom-right on all pages) immediately redirects to Google for users who need to leave quickly.
+**Target users**: People in difficult situations who need help finding local services or assistance with job applications/resumes. Content is written at a 6th grade reading level.
 
 ## Development Commands
 

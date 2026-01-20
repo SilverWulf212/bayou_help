@@ -10,10 +10,14 @@ import {
 
 const router = Router()
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'bayou-admin-2024'
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD
 
 router.post('/login', loginRateLimiter, (req, res) => {
   const { password } = req.body
+
+  if (!ADMIN_PASSWORD) {
+    return res.status(503).json({ error: 'Admin not configured' })
+  }
 
   if (password === ADMIN_PASSWORD) {
     res.json({ success: true })

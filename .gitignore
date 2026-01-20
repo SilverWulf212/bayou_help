@@ -16,6 +16,7 @@ node_modules/
 
 # misc
 .DS_Store
+nul
 *.log
 npm-debug.log*
 yarn-debug.log*
@@ -25,4 +26,3 @@ pnpm-debug.log*
 # local env
 .env
 .env.*
-

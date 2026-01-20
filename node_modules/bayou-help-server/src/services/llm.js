@@ -1,7 +1,7 @@
 import { SYSTEM_PROMPT } from '../../../shared/prompts.js'
 
-const OLLAMA_URL = process.env.OLLAMA_URL || 'http://localhost:11434'
-const MODEL = process.env.OLLAMA_MODEL || 'qwen2.5:7b'
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY
+const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-4o-mini'
 
 const FALLBACK_RESPONSES = {
   shelter: "Here are places that can help you find a place to stay. These shelters are in Acadiana and can help you today.",
@@ -48,26 +48,9 @@ function generateFallbackResponse(userMessage, resources) {
   }
 }
 
-async function checkOllamaAvailable() {
-  try {
-    const controller = new AbortController()
-    const timeout = setTimeout(() => controller.abort(), 2000)
-
-    const response = await fetch(`${OLLAMA_URL}/api/tags`, {
-      signal: controller.signal
-    })
-    clearTimeout(timeout)
-    return response.ok
-  } catch {
-    return false
-  }
-}
-
 export async function generateResponse(userMessage, history, resources) {
-  const ollamaAvailable = await checkOllamaAvailable()
-
-  if (!ollamaAvailable) {
-    console.log('Ollama not available, using fallback responses')
+  if (!OPENAI_API_KEY) {
+    console.log('OPENAI_API_KEY not set, using fallback responses')
     return generateFallbackResponse(userMessage, resources)
   }
 
@@ -90,18 +73,17 @@ export async function generateResponse(userMessage, history, resources) {
   const timeout = setTimeout(() => controller.abort(), 30000)
 
   try {
-    const response = await fetch(`${OLLAMA_URL}/api/chat`, {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${OPENAI_API_KEY}`
+      },
       body: JSON.stringify({
-        model: MODEL,
+        model: OPENAI_MODEL,
         messages,
-        stream: false,
-        options: {
-          temperature: 0.7,
-          top_p: 0.9,
-          num_predict: 256
-        }
+        max_tokens: 300,
+        temperature: 0.7
       }),
       signal: controller.signal
     })
@@ -109,7 +91,8 @@ export async function generateResponse(userMessage, history, resources) {
     clearTimeout(timeout)
 
     if (!response.ok) {
-      throw new Error(`Ollama error: ${response.status}`)
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(`OpenAI error: ${response.status} - ${errorData.error?.message || 'Unknown error'}`)
     }
 
     const data = await response.json()
@@ -119,7 +102,7 @@ export async function generateResponse(userMessage, history, resources) {
       : []
 
     return {
-      content: data.message?.content || "I couldn't generate a response. Please try again or call 211.",
+      content: data.choices?.[0]?.message?.content || "I couldn't generate a response. Please try again or call 211.",
       resources: resources.slice(0, 3),
       citations
     }

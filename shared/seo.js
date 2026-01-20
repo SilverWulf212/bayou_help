@@ -23,6 +23,7 @@ export const PUBLIC_ROUTES = [
   { path: '/', serviceOffered: 'Community Resources', priority: 1.0 },
   { path: '/chat', serviceOffered: 'Chat Support', priority: 0.9 },
   { path: '/resources', serviceOffered: 'Browse Resources', priority: 0.9 },
+  { path: '/resume', serviceOffered: 'Resume Builder', priority: 0.8 },
   { path: '/privacy', serviceOffered: 'Privacy & Safety', priority: 0.5 },
 ]
 
@@ -40,7 +41,8 @@ export function routeSeo(pathname) {
     '/': 'Find shelter, food, healthcare, and other help in Acadiana. Phone numbers included. If you need urgent help, call 211.',
     '/chat': 'Chat to find local resources for shelter, food, healthcare, work, and safety in Acadiana. For immediate help, call 211.',
     '/resources': 'Browse local resources in Acadiana by parish and category. Phone numbers and next steps included.',
-    '/privacy': 'Learn how Bayou Help protects your privacy and safety, including quick-exit and browsing tips.',
+    '/resume': 'Free resume builder for job seekers in Acadiana. Get help creating a professional resume for your job search.',
+    '/privacy': 'Learn how Bayou Help protects your privacy and keeps your information safe.',
   }
 
   return {

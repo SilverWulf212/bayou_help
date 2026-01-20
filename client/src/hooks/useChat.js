@@ -10,7 +10,8 @@ export function useChat() {
 
     const userMessage = { role: 'user', content }
     const currentHistory = messagesRef.current
-    messagesRef.current = [...currentHistory, userMessage]
+    const nextHistory = [...currentHistory, userMessage]
+    messagesRef.current = nextHistory
     setMessages(messagesRef.current)
     setIsLoading(true)
 
@@ -20,12 +21,13 @@ export function useChat() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: content,
-          history: currentHistory,
+          history: nextHistory,
         }),
       })
 
       if (!response.ok) {
-        throw new Error('Failed to get response')
+        const errBody = await response.json().catch(() => null)
+        throw new Error(errBody?.error || 'Failed to get response')
       }
 
       const data = await response.json()

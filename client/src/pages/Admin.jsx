@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Lock, Plus, Pencil, Trash2 } from 'lucide-react'
 import ResourceFormModal from '../components/admin/ResourceFormModal'
@@ -9,7 +9,7 @@ import ScrollFadeIn from '../components/ui/ScrollFadeIn'
 function Admin() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [password, setPassword] = useState('')
-  const [adminPassword, setAdminPassword] = useState('')
+  const [adminToken, setAdminToken] = useState('')
   const [resources, setResources] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
@@ -18,6 +18,25 @@ function Admin() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [selectedResource, setSelectedResource] = useState(null)
   const [isSaving, setIsSaving] = useState(false)
+
+  useEffect(() => {
+    try {
+      const existing = sessionStorage.getItem('adminToken')
+      if (existing) {
+        setAdminToken(existing)
+        setIsAuthenticated(true)
+      }
+    } catch {
+      // ignore
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!isAuthenticated) return
+    if (!adminToken) return
+    fetchResources()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAuthenticated, adminToken])
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -30,8 +49,13 @@ function Admin() {
       })
 
       if (response.ok) {
+        const data = await response.json()
+        if (!data?.token) {
+          throw new Error('Login failed')
+        }
         setIsAuthenticated(true)
-        setAdminPassword(password)
+        setAdminToken(data.token)
+        sessionStorage.setItem('adminToken', data.token)
         fetchResources()
       } else {
         setError('Invalid password')
@@ -84,7 +108,7 @@ function Admin() {
         method,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${adminPassword}`
+          'Authorization': `Bearer ${adminToken}`
         },
         body: JSON.stringify(formData)
       })
@@ -114,7 +138,7 @@ function Admin() {
       const response = await fetch(`/api/admin/resources/${selectedResource.id}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${adminPassword}`
+          'Authorization': `Bearer ${adminToken}`
         }
       })
 
@@ -188,7 +212,16 @@ function Admin() {
 
       <div className="absolute top-3 right-4 z-20">
         <button
-          onClick={() => setIsAuthenticated(false)}
+          onClick={() => {
+            setIsAuthenticated(false)
+            setAdminToken('')
+            setPassword('')
+            try {
+              sessionStorage.removeItem('adminToken')
+            } catch {
+              // ignore
+            }
+          }}
           className="text-sm text-white/80 hover:text-white"
         >
           Logout

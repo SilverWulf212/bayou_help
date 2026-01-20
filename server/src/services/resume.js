@@ -1,407 +1,319 @@
-// Resume Builder Service
-// Guides users through creating a simple resume via chat
-
-import PDFDocument from 'pdfkit'
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } from 'docx'
 
-export const RESUME_PROMPT = `You are now helping someone build a simple resume. Guide them step by step.
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY
+const OPENAI_MODEL = process.env.OPENAI_MODEL || 'gpt-4o-mini'
 
-RESUME BUILDING PROCESS:
-Ask ONE question at a time in this order:
+export const RESUME_PROMPT = `You are a friendly resume assistant for Bayou Help, helping job seekers in Acadiana, Louisiana.
+
+RESUME BUILDING PROCESS - Ask ONE question at a time:
 1. "What's your full name?"
 2. "What's a phone number where employers can reach you?"
-3. "What city do you live in?"
-4. "What kind of work are you looking for?" (e.g., warehouse, retail, food service, cleaning)
-5. "Have you worked before? Tell me about your most recent job - what was the job title and company name?"
-6. "What did you do at that job? Give me 2-3 things you did."
-7. "Do you have any other jobs to add, or should we move on?" (repeat 5-6 if yes)
-8. "What skills do you have?" (e.g., can drive, speak Spanish, good with customers, lift heavy things)
+3. "What's your email address? (or say 'skip' if you don't have one)"
+4. "What city do you live in?"
+5. "What kind of work are you looking for?" (warehouse, retail, food service, healthcare, etc.)
+6. "Tell me about your most recent job - what was your job title and where did you work?"
+7. "What did you do at that job? Give me 2-3 main things."
+8. "Any other jobs to add? Say 'no' to move on, or tell me about another job."
+9. "What skills do you have?" (driving, customer service, computers, languages, certifications, etc.)
+10. "Any education to include? High school, GED, trade school, college, certifications?"
 
 RULES:
 - Ask ONE question at a time
-- Use simple, friendly language
-- If they don't know something, help them think of answers
-- Be encouraging - everyone has skills!
-- When you have enough info (name, phone, city, job type, at least 1 job or skill), say "I have enough to make your resume! Type 'make my resume' when ready."
+- Use simple, friendly language (6th grade reading level)
+- Be encouraging - everyone has valuable skills!
+- If they say "skip" or "none", move to the next question
+- When you have: name, phone, city, at least 1 job OR 3 skills, say:
+  "Great! I have enough info. Click the 'Create My Resume' button when you're ready!"
 
-EXAMPLE CONVERSATION:
-User: "I need help with my resume"
-You: "I'd be happy to help you build a resume! Let's start simple. What's your full name?"
-User: "John Smith"
-You: "Great, John! What's a phone number where employers can reach you?"
-...and so on.
+Be patient and helpful. Many people haven't made a resume before.`
 
-Remember: Many people haven't made a resume before. Be patient and helpful.`
+const RESUME_FORMAT_PROMPT = `You are a professional resume writer. Take the provided information and create a clean, professional resume.
 
-export function detectResumeIntent(message) {
-  const lower = message.toLowerCase()
-  const resumeKeywords = [
-    'resume', 'résumé', 'cv', 'build resume', 'make resume',
-    'need resume', 'help with resume', 'create resume', 'write resume',
-    'job application', 'apply for job'
+RULES:
+1. Write professionally but simply
+2. Use action verbs (managed, created, helped, trained, etc.)
+3. Fix grammar and spelling
+4. Don't invent information - only use what's provided
+5. If something is missing, skip that section
+
+OUTPUT FORMAT (use this exact structure):
+NAME: [Full Name]
+EMAIL: [Email or "Not provided"]
+PHONE: [Phone]
+LOCATION: [City, State]
+
+SUMMARY:
+[2-3 sentence professional summary based on their experience and goals]
+
+EXPERIENCE:
+[Job Title] | [Company] | [Location]
+- [Responsibility/achievement]
+- [Responsibility/achievement]
+
+EDUCATION:
+[Degree/Certificate] | [School] | [Year if provided]
+
+SKILLS:
+[Skill 1], [Skill 2], [Skill 3], etc.`
+
+const TRIAGE_PROMPT = `You determine if someone needs local resources or job/resume help.
+
+Respond with ONLY one word:
+- RESOURCES = needs shelter, food, healthcare, crisis help, transportation, documents, immediate assistance
+- RESUME = wants help with resume, job search, employment, career, work application
+
+PRIORITY: If someone mentions BOTH immediate needs (food, shelter, danger) AND jobs, respond RESOURCES.
+
+Examples:
+"I need food" → RESOURCES
+"help with my resume" → RESUME
+"looking for work" → RESUME
+"I'm homeless and need a job" → RESOURCES
+"can you help me find a job" → RESUME
+"I'm hungry" → RESOURCES`
+
+export async function triageUser(message) {
+  if (!OPENAI_API_KEY) {
+    const lower = message.toLowerCase()
+    const resumeWords = ['resume', 'job', 'work', 'employ', 'career', 'cv', 'application']
+    if (resumeWords.some(w => lower.includes(w))) {
+      return { route: 'RESUME' }
+    }
+    return { route: 'RESOURCES' }
+  }
+
+  try {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${OPENAI_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: OPENAI_MODEL,
+        messages: [
+          { role: 'system', content: TRIAGE_PROMPT },
+          { role: 'user', content: message }
+        ],
+        max_tokens: 10,
+        temperature: 0
+      })
+    })
+
+    const data = await response.json()
+    const result = data.choices?.[0]?.message?.content?.trim().toUpperCase()
+    return { route: result === 'RESUME' ? 'RESUME' : 'RESOURCES' }
+  } catch (error) {
+    console.error('Triage error:', error.message)
+    return { route: 'RESOURCES' }
+  }
+}
+
+export async function generateResumeChat(message, history) {
+  if (!OPENAI_API_KEY) {
+    return { content: "I'd love to help with your resume, but the AI service isn't available right now. Please try again later or visit the Louisiana Workforce Commission at 337-262-5679 for in-person help." }
+  }
+
+  const messages = [
+    { role: 'system', content: RESUME_PROMPT },
+    ...history.slice(-10).map(m => ({ role: m.role, content: m.content })),
+    { role: 'user', content: message }
   ]
-  return resumeKeywords.some(k => lower.includes(k))
+
+  try {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${OPENAI_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: OPENAI_MODEL,
+        messages,
+        max_tokens: 300,
+        temperature: 0.7
+      })
+    })
+
+    const data = await response.json()
+    return { content: data.choices?.[0]?.message?.content || "I'm having trouble. Let's try that again." }
+  } catch (error) {
+    console.error('Resume chat error:', error.message)
+    return { content: "Something went wrong. Please try again." }
+  }
 }
 
-export function detectResumeComplete(message) {
-  const lower = message.toLowerCase()
-  return lower.includes('make my resume') ||
-         lower.includes('create my resume') ||
-         lower.includes('generate resume') ||
-         lower.includes('finish resume') ||
-         lower.includes('done with resume')
-}
-
-export function isInResumeMode(history) {
-  // Check if we're already in resume building mode by looking at history
-  for (let i = history.length - 1; i >= 0; i--) {
-    const msg = history[i]
-    if (msg.role === 'assistant' && msg.resumeMode) {
-      return true
-    }
-    // If we find a completed resume, we're no longer in resume mode
-    if (msg.role === 'assistant' && msg.resumeComplete) {
-      return false
-    }
-  }
-  return false
-}
-
-export function extractResumeData(history) {
-  // Extract resume info from conversation history
-  const data = {
-    name: '',
-    phone: '',
-    city: '',
-    jobType: '',
-    jobs: [],
-    skills: []
+export async function formatResumeWithAI(userInfo) {
+  if (!OPENAI_API_KEY) {
+    throw new Error('Resume formatting requires AI service')
   }
 
-  // Find where resume mode started
-  let resumeStartIndex = -1
-  for (let i = 0; i < history.length; i++) {
-    const msg = history[i]
-    if (msg.role === 'user') {
-      const lower = msg.content.toLowerCase()
-      if (lower.includes('resume') || lower.includes('cv')) {
-        resumeStartIndex = i
-        break
-      }
-    }
-  }
+  const prompt = `Create a professional resume with this information:
 
-  if (resumeStartIndex === -1) return data
+Name: ${userInfo.name || 'Not provided'}
+Email: ${userInfo.email || 'Not provided'}
+Phone: ${userInfo.phone || 'Not provided'}
+Location: ${userInfo.location || 'Louisiana'}
 
-  // Extract data from user responses after resume mode started
-  let questionIndex = 0
-  const questionOrder = ['name', 'phone', 'city', 'jobType', 'job', 'duties', 'skills']
+Work Experience:
+${userInfo.experience || 'None provided'}
 
-  for (let i = resumeStartIndex + 1; i < history.length; i++) {
-    const msg = history[i]
+Education:
+${userInfo.education || 'None provided'}
 
-    if (msg.role === 'assistant') {
-      const lower = msg.content.toLowerCase()
-      // Detect what question was asked to track progress
-      if (lower.includes('name')) questionIndex = 0
-      else if (lower.includes('phone')) questionIndex = 1
-      else if (lower.includes('city') || lower.includes('live')) questionIndex = 2
-      else if (lower.includes('kind of work') || lower.includes('looking for') || lower.includes('type of')) questionIndex = 3
-      else if (lower.includes('worked') || lower.includes('job') || lower.includes('recent')) questionIndex = 4
-      else if (lower.includes('did you do') || lower.includes('responsibilit') || lower.includes('duties')) questionIndex = 5
-      else if (lower.includes('skill')) questionIndex = 6
-    } else if (msg.role === 'user') {
-      const content = msg.content.trim()
-      // Skip if this is the "make my resume" command
-      if (detectResumeComplete(content)) continue
+Skills:
+${userInfo.skills || 'None provided'}
 
-      switch (questionOrder[questionIndex]) {
-        case 'name':
-          if (!data.name) data.name = content
-          questionIndex++
-          break
-        case 'phone':
-          if (!data.phone) data.phone = content
-          questionIndex++
-          break
-        case 'city':
-          if (!data.city) data.city = content
-          questionIndex++
-          break
-        case 'jobType':
-          if (!data.jobType) data.jobType = content
-          questionIndex++
-          break
-        case 'job':
-          data.jobs.push({ title: content, duties: [] })
-          questionIndex++
-          break
-        case 'duties':
-          if (data.jobs.length > 0) {
-            data.jobs[data.jobs.length - 1].duties = content.split(/[,\n]/).map(d => d.trim()).filter(d => d)
-          }
-          questionIndex++
-          break
-        case 'skills':
-          data.skills = content.split(/[,\n]/).map(s => s.trim()).filter(s => s)
-          break
-      }
-    }
-  }
+Job Goal: ${userInfo.jobGoal || 'General employment'}`
 
-  return data
-}
-
-export function generateResumeText(data) {
-  let resume = `
-═══════════════════════════════════════
-            ${data.name.toUpperCase() || 'YOUR NAME'}
-═══════════════════════════════════════
-Phone: ${data.phone || '(your phone)'}
-Location: ${data.city || '(your city)'}, Louisiana
-
-───────────────────────────────────────
-OBJECTIVE
-───────────────────────────────────────
-Seeking ${data.jobType || 'employment'} position where I can
-contribute my skills and grow professionally.
-
-`
-
-  if (data.jobs.length > 0) {
-    resume += `───────────────────────────────────────
-WORK EXPERIENCE
-───────────────────────────────────────
-`
-    for (const job of data.jobs) {
-      resume += `${job.title}\n`
-      if (job.duties.length > 0) {
-        for (const duty of job.duties) {
-          resume += `  • ${duty}\n`
-        }
-      }
-      resume += '\n'
-    }
-  }
-
-  if (data.skills.length > 0) {
-    resume += `───────────────────────────────────────
-SKILLS
-───────────────────────────────────────
-`
-    for (const skill of data.skills) {
-      resume += `  • ${skill}\n`
-    }
-  }
-
-  resume += `
-═══════════════════════════════════════
-`
-
-  return resume.trim()
-}
-
-export function generateResumeHTML(data) {
-  const jobsHtml = data.jobs.map(job => `
-    <div class="job">
-      <strong>${job.title}</strong>
-      ${job.duties.length > 0 ? `<ul>${job.duties.map(d => `<li>${d}</li>`).join('')}</ul>` : ''}
-    </div>
-  `).join('')
-
-  const skillsHtml = data.skills.length > 0
-    ? `<ul>${data.skills.map(s => `<li>${s}</li>`).join('')}</ul>`
-    : ''
-
-  return `
-<!DOCTYPE html>
-<html>
-<head>
-  <style>
-    body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; }
-    h1 { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; }
-    .contact { text-align: center; margin-bottom: 20px; }
-    h2 { color: #2d5a27; border-bottom: 1px solid #ccc; }
-    ul { margin: 10px 0; }
-    li { margin: 5px 0; }
-  </style>
-</head>
-<body>
-  <h1>${data.name || 'Your Name'}</h1>
-  <div class="contact">
-    ${data.phone || '(phone)'} | ${data.city || '(city)'}, Louisiana
-  </div>
-
-  <h2>Objective</h2>
-  <p>Seeking ${data.jobType || 'employment'} position where I can contribute my skills and grow professionally.</p>
-
-  ${data.jobs.length > 0 ? `<h2>Work Experience</h2>${jobsHtml}` : ''}
-  ${data.skills.length > 0 ? `<h2>Skills</h2>${skillsHtml}` : ''}
-</body>
-</html>
-`
-}
-
-export function generateResumePDF(data) {
-  return new Promise((resolve, reject) => {
-    try {
-      const doc = new PDFDocument({ margin: 50 })
-      const chunks = []
-
-      doc.on('data', chunk => chunks.push(chunk))
-      doc.on('end', () => resolve(Buffer.concat(chunks)))
-      doc.on('error', reject)
-
-      // Header - Name
-      doc.fontSize(24).font('Helvetica-Bold')
-         .text(data.name || 'Your Name', { align: 'center' })
-
-      // Contact info
-      doc.fontSize(11).font('Helvetica')
-         .text(`${data.phone || '(phone)'} | ${data.city || '(city)'}, Louisiana`, { align: 'center' })
-
-      doc.moveDown(1.5)
-
-      // Objective
-      doc.fontSize(14).font('Helvetica-Bold').fillColor('#2d5a27')
-         .text('OBJECTIVE')
-      doc.moveTo(50, doc.y).lineTo(550, doc.y).stroke('#cccccc')
-      doc.moveDown(0.5)
-      doc.fontSize(11).font('Helvetica').fillColor('black')
-         .text(`Seeking ${data.jobType || 'employment'} position where I can contribute my skills and grow professionally.`)
-
-      doc.moveDown(1)
-
-      // Work Experience
-      if (data.jobs && data.jobs.length > 0) {
-        doc.fontSize(14).font('Helvetica-Bold').fillColor('#2d5a27')
-           .text('WORK EXPERIENCE')
-        doc.moveTo(50, doc.y).lineTo(550, doc.y).stroke('#cccccc')
-        doc.moveDown(0.5)
-
-        for (const job of data.jobs) {
-          doc.fontSize(12).font('Helvetica-Bold').fillColor('black')
-             .text(job.title)
-          if (job.duties && job.duties.length > 0) {
-            for (const duty of job.duties) {
-              doc.fontSize(11).font('Helvetica')
-                 .text(`  •  ${duty}`)
-            }
-          }
-          doc.moveDown(0.5)
-        }
-      }
-
-      // Skills
-      if (data.skills && data.skills.length > 0) {
-        doc.moveDown(0.5)
-        doc.fontSize(14).font('Helvetica-Bold').fillColor('#2d5a27')
-           .text('SKILLS')
-        doc.moveTo(50, doc.y).lineTo(550, doc.y).stroke('#cccccc')
-        doc.moveDown(0.5)
-
-        for (const skill of data.skills) {
-          doc.fontSize(11).font('Helvetica').fillColor('black')
-             .text(`  •  ${skill}`)
-        }
-      }
-
-      doc.end()
-    } catch (error) {
-      reject(error)
-    }
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${OPENAI_API_KEY}`
+    },
+    body: JSON.stringify({
+      model: OPENAI_MODEL,
+      messages: [
+        { role: 'system', content: RESUME_FORMAT_PROMPT },
+        { role: 'user', content: prompt }
+      ],
+      max_tokens: 1500,
+      temperature: 0.3
+    })
   })
+
+  const data = await response.json()
+  return data.choices?.[0]?.message?.content || ''
 }
 
-export async function generateResumeDOCX(data) {
+function parseResumeText(text) {
+  const result = {
+    name: '', email: '', phone: '', location: '',
+    summary: '', experience: [], education: [], skills: []
+  }
+
+  const lines = text.split('\n').map(l => l.trim()).filter(Boolean)
+  let section = null
+
+  for (const line of lines) {
+    if (line.startsWith('NAME:')) result.name = line.replace('NAME:', '').trim()
+    else if (line.startsWith('EMAIL:')) result.email = line.replace('EMAIL:', '').trim()
+    else if (line.startsWith('PHONE:')) result.phone = line.replace('PHONE:', '').trim()
+    else if (line.startsWith('LOCATION:')) result.location = line.replace('LOCATION:', '').trim()
+    else if (line.startsWith('SUMMARY:')) {
+      section = 'summary'
+      const s = line.replace('SUMMARY:', '').trim()
+      if (s) result.summary = s
+    }
+    else if (line.startsWith('EXPERIENCE:')) section = 'experience'
+    else if (line.startsWith('EDUCATION:')) section = 'education'
+    else if (line.startsWith('SKILLS:')) {
+      section = 'skills'
+      const s = line.replace('SKILLS:', '').trim()
+      if (s) result.skills = s.split(',').map(x => x.trim()).filter(Boolean)
+    }
+    else if (section === 'summary') result.summary += ' ' + line
+    else if (section === 'experience') result.experience.push(line)
+    else if (section === 'education') result.education.push(line)
+    else if (section === 'skills' && !result.skills.length) {
+      result.skills = line.split(',').map(x => x.trim()).filter(Boolean)
+    }
+  }
+
+  return result
+}
+
+export async function generateResumeDOCX(userInfo) {
+  const formattedText = await formatResumeWithAI(userInfo)
+  const parsed = parseResumeText(formattedText)
+
   const children = []
 
-  // Name header
-  children.push(
-    new Paragraph({
-      children: [new TextRun({ text: data.name || 'Your Name', bold: true, size: 48 })],
+  // Name
+  if (parsed.name && parsed.name !== 'Not provided') {
+    children.push(new Paragraph({
+      children: [new TextRun({ text: parsed.name, bold: true, size: 48 })],
       alignment: AlignmentType.CENTER,
       spacing: { after: 100 }
-    })
-  )
+    }))
+  }
 
-  // Contact info
-  children.push(
-    new Paragraph({
-      children: [new TextRun({ text: `${data.phone || '(phone)'} | ${data.city || '(city)'}, Louisiana`, size: 22 })],
+  // Contact
+  const contact = [parsed.email, parsed.phone, parsed.location]
+    .filter(x => x && x !== 'Not provided').join(' | ')
+  if (contact) {
+    children.push(new Paragraph({
+      children: [new TextRun({ text: contact, size: 22 })],
       alignment: AlignmentType.CENTER,
-      spacing: { after: 400 }
-    })
-  )
+      spacing: { after: 300 }
+    }))
+  }
 
-  // Objective
-  children.push(
-    new Paragraph({
-      text: 'OBJECTIVE',
+  // Summary
+  if (parsed.summary) {
+    children.push(new Paragraph({
+      text: 'PROFESSIONAL SUMMARY',
       heading: HeadingLevel.HEADING_2,
       spacing: { before: 200, after: 100 }
-    })
-  )
-  children.push(
-    new Paragraph({
-      children: [new TextRun({ text: `Seeking ${data.jobType || 'employment'} position where I can contribute my skills and grow professionally.`, size: 22 })],
+    }))
+    children.push(new Paragraph({
+      children: [new TextRun({ text: parsed.summary.trim(), size: 22 })],
       spacing: { after: 200 }
-    })
-  )
+    }))
+  }
 
-  // Work Experience
-  if (data.jobs && data.jobs.length > 0) {
-    children.push(
-      new Paragraph({
-        text: 'WORK EXPERIENCE',
-        heading: HeadingLevel.HEADING_2,
-        spacing: { before: 200, after: 100 }
-      })
-    )
+  // Experience
+  if (parsed.experience.length) {
+    children.push(new Paragraph({
+      text: 'WORK EXPERIENCE',
+      heading: HeadingLevel.HEADING_2,
+      spacing: { before: 200, after: 100 }
+    }))
+    for (const line of parsed.experience) {
+      const isBullet = line.startsWith('-')
+      children.push(new Paragraph({
+        children: [new TextRun({
+          text: isBullet ? line.substring(1).trim() : line,
+          size: 22,
+          bold: !isBullet
+        })],
+        bullet: isBullet ? { level: 0 } : undefined,
+        spacing: { after: 50 }
+      }))
+    }
+  }
 
-    for (const job of data.jobs) {
-      children.push(
-        new Paragraph({
-          children: [new TextRun({ text: job.title, bold: true, size: 24 })],
-          spacing: { before: 100 }
-        })
-      )
-      if (job.duties && job.duties.length > 0) {
-        for (const duty of job.duties) {
-          children.push(
-            new Paragraph({
-              children: [new TextRun({ text: `•  ${duty}`, size: 22 })],
-              indent: { left: 360 }
-            })
-          )
-        }
-      }
+  // Education
+  if (parsed.education.length) {
+    children.push(new Paragraph({
+      text: 'EDUCATION',
+      heading: HeadingLevel.HEADING_2,
+      spacing: { before: 200, after: 100 }
+    }))
+    for (const line of parsed.education) {
+      children.push(new Paragraph({
+        children: [new TextRun({ text: line.replace(/^-\s*/, ''), size: 22 })],
+        spacing: { after: 50 }
+      }))
     }
   }
 
   // Skills
-  if (data.skills && data.skills.length > 0) {
-    children.push(
-      new Paragraph({
-        text: 'SKILLS',
-        heading: HeadingLevel.HEADING_2,
-        spacing: { before: 200, after: 100 }
-      })
-    )
-
-    for (const skill of data.skills) {
-      children.push(
-        new Paragraph({
-          children: [new TextRun({ text: `•  ${skill}`, size: 22 })],
-          indent: { left: 360 }
-        })
-      )
-    }
+  if (parsed.skills.length) {
+    children.push(new Paragraph({
+      text: 'SKILLS',
+      heading: HeadingLevel.HEADING_2,
+      spacing: { before: 200, after: 100 }
+    }))
+    children.push(new Paragraph({
+      children: [new TextRun({ text: parsed.skills.join(' • '), size: 22 })],
+      spacing: { after: 100 }
+    }))
   }
 
-  const doc = new Document({
-    sections: [{ children }]
-  })
+  const doc = new Document({ sections: [{ children }] })
+  const buffer = await Packer.toBuffer(doc)
 
-  return await Packer.toBuffer(doc)
+  return { buffer, text: formattedText, parsed }
 }

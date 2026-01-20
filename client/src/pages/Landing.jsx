@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { ArrowRight, Heart, MessageCircle, MapPin, Shield } from 'lucide-react'
+import { ArrowRight, Heart, MessageCircle, MapPin, Shield, Briefcase } from 'lucide-react'
 import HeroImage from '../components/ui/HeroImage'
 import ScrollFadeIn from '../components/ui/ScrollFadeIn'
 import ImageGalleryStrip from '../components/ui/ImageGalleryStrip'
@@ -76,7 +76,7 @@ function Landing() {
       </HeroImage>
 
       <main className="container mx-auto px-4 pb-12 pt-8 hero-backdrop">
-        <div className="grid gap-4 lg:grid-cols-3">
+        <div className="grid gap-4 lg:grid-cols-4">
           <ScrollFadeIn delay={0}>
             <Link
               to="/chat"
@@ -117,11 +117,30 @@ function Landing() {
 
           <ScrollFadeIn delay={200}>
             <Link
-              to="/privacy"
+              to="/resume"
               className="block hero-glass rounded-3xl border border-border p-5 sm:p-6 hover:bg-white/80 transition-colors card-lift h-full"
             >
               <div className="flex items-start gap-4">
                 <div className="w-11 h-11 rounded-2xl bg-bayou-gold/20 flex items-center justify-center">
+                  <Briefcase className="w-5 h-5 text-bayou-green" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-bayou-green">Resume help</h3>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Build a resume for your job search.
+                  </p>
+                </div>
+              </div>
+            </Link>
+          </ScrollFadeIn>
+
+          <ScrollFadeIn delay={300}>
+            <Link
+              to="/privacy"
+              className="block hero-glass rounded-3xl border border-border p-5 sm:p-6 hover:bg-white/80 transition-colors card-lift h-full"
+            >
+              <div className="flex items-start gap-4">
+                <div className="w-11 h-11 rounded-2xl bg-muted/50 flex items-center justify-center">
                   <Shield className="w-5 h-5 text-bayou-green" />
                 </div>
                 <div>
@@ -135,12 +154,12 @@ function Landing() {
           </ScrollFadeIn>
         </div>
 
-        <ScrollFadeIn delay={300} className="mt-8">
+        <ScrollFadeIn delay={400} className="mt-8">
           <section className="rounded-3xl border border-border bg-white/60 p-5 sm:p-6">
             <h3 className="text-sm tracking-[0.18em] uppercase text-muted-foreground">
               Quick paths
             </h3>
-            <div className="mt-4 grid gap-3 sm:grid-cols-4">
+            <div className="mt-4 grid gap-3 sm:grid-cols-5">
               <Link
                 to="/resources?category=shelter"
                 className="rounded-2xl px-4 py-3 bg-white/70 border border-border hover:bg-white transition-colors text-center text-sm card-lift"
@@ -160,6 +179,12 @@ function Landing() {
                 Medical
               </Link>
               <Link
+                to="/resume"
+                className="rounded-2xl px-4 py-3 bg-white/70 border border-border hover:bg-white transition-colors text-center text-sm card-lift"
+              >
+                Jobs
+              </Link>
+              <Link
                 to="/resources?category=crisis"
                 className="rounded-2xl px-4 py-3 bg-white/70 border border-border hover:bg-white transition-colors text-center text-sm card-lift"
               >
@@ -169,7 +194,7 @@ function Landing() {
           </section>
         </ScrollFadeIn>
 
-        <ScrollFadeIn delay={400}>
+        <ScrollFadeIn delay={500}>
           <ImageGalleryStrip />
         </ScrollFadeIn>
 
