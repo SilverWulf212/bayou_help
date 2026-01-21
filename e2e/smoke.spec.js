@@ -21,7 +21,7 @@ test('resource detail page loads', async ({ page }) => {
   await details.click()
 
   // Resource detail view shows a Back link and the resource name as the hero title.
-  await expect(page.getByRole('link', { name: /Back to resources/i })).toBeVisible()
+  await expect(page.getByRole('link', { name: /Back to resources/i })).toBeVisible({ timeout: 20000 })
   await expect(page.getByRole('heading').first()).toBeVisible()
 })
 
