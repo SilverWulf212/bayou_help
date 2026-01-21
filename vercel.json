@@ -1,7 +1,7 @@
 {
   "framework": "vite",
   "installCommand": "npm ci",
-  "buildCommand": "npm run build -w bayou-help-client && node scripts/vercel-copy-client-dist.mjs",
+  "buildCommand": "node scripts/vercel-build.mjs",
   "outputDirectory": "dist",
   "rewrites": [
     {

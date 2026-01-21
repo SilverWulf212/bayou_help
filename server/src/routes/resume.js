@@ -41,7 +41,7 @@ router.post('/generate', async (req, res, next) => {
       return res.status(400).json({ error: 'User info is required' })
     }
 
-    const { buffer, text } = await generateResumeDOCX(userInfo)
+    const { buffer } = await generateResumeDOCX(userInfo)
 
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')
     res.setHeader('Content-Disposition', 'attachment; filename="resume.docx"')
