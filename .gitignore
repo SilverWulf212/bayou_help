@@ -26,3 +26,5 @@ pnpm-debug.log*
 # local env
 .env
 .env.*
+node_modules
+node_modules
