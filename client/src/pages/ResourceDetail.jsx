@@ -27,14 +27,31 @@ function ResourceDetail() {
       setLoading(true)
       setError(null)
       try {
-        const response = await fetch(`/api/resources/${encodeURIComponent(id)}`)
-        if (!response.ok) {
-          throw new Error('Resource not found')
+        const url = `/api/resources/${encodeURIComponent(id)}`
+        const maxAttempts = 3
+        let lastError = null
+
+        for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+          try {
+            const response = await fetch(url)
+            if (!response.ok) {
+              throw new Error('Resource not found')
+            }
+            const data = await response.json()
+            if (!cancelled) {
+              setResource(data)
+            }
+            lastError = null
+            break
+          } catch (err) {
+            lastError = err
+            if (attempt < maxAttempts) {
+              await new Promise((r) => setTimeout(r, 500 * attempt))
+            }
+          }
         }
-        const data = await response.json()
-        if (!cancelled) {
-          setResource(data)
-        }
+
+        if (lastError) throw lastError
       } catch (err) {
         if (!cancelled) {
           setError(err.message)

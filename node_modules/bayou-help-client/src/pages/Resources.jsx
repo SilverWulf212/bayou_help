@@ -45,11 +45,29 @@ function Resources() {
         if (parish) params.append('parish', parish)
         if (category) params.append('category', category)
 
-        const response = await fetch(`/api/resources?${params}`)
-        if (!response.ok) throw new Error('Failed to fetch resources')
+        const url = `/api/resources?${params}`
+        const maxAttempts = 3
+        let lastError = null
 
-        const data = await response.json()
-        setResources(data)
+        for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+          try {
+            const response = await fetch(url)
+            if (!response.ok) {
+              throw new Error('Failed to fetch resources')
+            }
+            const data = await response.json()
+            setResources(data)
+            lastError = null
+            break
+          } catch (err) {
+            lastError = err
+            if (attempt < maxAttempts) {
+              await new Promise((r) => setTimeout(r, 500 * attempt))
+            }
+          }
+        }
+
+        if (lastError) throw lastError
       } catch (err) {
         setError(err.message)
       } finally {
